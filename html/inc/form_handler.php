@@ -94,36 +94,48 @@ if (isset($_POST['submit_login'])) {
     }
 
     // Checking for existing data
-    $results = $crud->read('users', ['email', 'firstname', 'lastname', 'password', 'class', 'group_id', 'role'], [
+    $results_users = $crud->read('users', ['id', 'email', 'firstname', 'lastname', 'password', 'class', 'role'], [
         'email' => $email,
     ]);
     $crud->showQuery();
 
-    print_p($results);
+    print_p($results_users);
 
     // Checking for more errors
-    if (empty($results)) {
+    if (empty($results_users)) {
         formErrorHandler("EMail is incorrect!");
     }
-    if (!password_verify($passwd_config['pepper'] . $password . $passwd_config['salt'], $results['password'])) {
+    if (!password_verify($passwd_config['pepper'] . $password . $passwd_config['salt'], $results_users[0]['password'])) {
         formErrorHandler("Password is incorrect!");
     }
     
-    // Get group data. Will change to join but CRUD sucks.
-    $results_group = $crud->read('groups', '*', [
-        'id' => $results['group_id'],
-    ]);
+    $results = $crud->customQuery("
+        SELECT `users`.email, `users`.firstname, `users`.lastname, `users`.class, `users`.role, groups.name, groups.description, `group_members`.role AS group_role
+        FROM `users`
+        INNER JOIN `group_members` ON `group_members`.user_id = `users`.id
+        INNER JOIN `groups` ON `groups`.id = `group_members`.group_id
+        WHERE `users`.id = :user_id", 
+        [
+            'user_id' => $results_users[0]['id']
+        ]
+    );
     $crud->showQuery();
-    print_p($_SESSION);
 
-    $_SESSION['USER_INFO'] = [
-        'email' => $results['email'],
-        'firstname' => $results['firstname'],
-        'lastname' => $results['lastname'],
-        'class' => $results['class'],
-        'group' => $results_group['name'],
-        'role' => $results['role']
-    ];
+$_SESSION['USER_INFO'] = array(
+    'email' => $results[0]['email'],
+    'firstname' => $results[0]['firstname'],
+    'lastname' => $results[0]['lastname'],
+    'class' => $results[0]['class'],
+    'role' => $results[0]['role']
+);
+$_SESSION['GROUP_INFO'] = array(
+    'name' => $results[0]['name'],
+    'role' => $results[0]['group_role'],
+    'description' => $results[0]['description']
+);
+
+
+    print_p($_SESSION);
 
     formErrorHandler("Logged in successfully!");
 }

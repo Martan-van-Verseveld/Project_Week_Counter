@@ -99,25 +99,28 @@ class CRUD {
     }
 
     // Read records
-    public function read($table, $columns, $conditions) {
+    public function read($table, $columns, $conditions = []) {
         try {
             $fields = is_array($columns) ? implode(", ", $columns) : $columns;
 
             $where = '';
-            foreach ($conditions as $key => $value) {
-                $where .= "$key = '$value' AND ";
+            if (!empty($conditions)) {
+                $where = 'WHERE ';
+                foreach ($conditions as $key => $value) {
+                    $where .= "$key = '$value' AND ";
+                }
+                $where = rtrim($where, 'AND ');
             }
-            $where = rtrim($where, 'AND ');
-
+    
             $this->query = "
             SELECT $fields
-            FROM `$table` 
-            WHERE $where;
+            FROM `$table`
+            $where
             ";
 
             $stmt = $this->conn->prepare($this->query);
             $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
             echo "Error: " . $e->getMessage();
             return false;
@@ -125,7 +128,7 @@ class CRUD {
     }
 
     // Update records
-    public function update($table, $data, $conditions) {
+    public function update($table, $data, $conditions = []) {
         try {
             $fields = '';
             foreach ($data as $key => $value) {
@@ -133,17 +136,17 @@ class CRUD {
             }
             $fields = rtrim($fields, ', ');
 
-            $where = '';
+            $where = 'WHERE ';
             foreach ($conditions as $key => $value) {
                 $where .= "$key = '$value' AND ";
             }
             $where = rtrim($where, 'AND ');
 
             $this->query = "
-            UPDATE $table 
-            SET $fields 
-            WHERE $where;"
-            ;
+            UPDATE `$table` 
+            SET $fields
+            ";
+            $this->query .= (empty($conditions)) ? '' : $where;
 
             $stmt = $this->conn->prepare($this->query);
             $stmt->execute($data);
@@ -156,23 +159,23 @@ class CRUD {
     }
 
     // Delete records
-    public function delete($table, $conditions) {
+    public function delete($table, $conditions = []) {
         try {
             $this->conn->beginTransaction();
     
             // Fetch the data before deleting for potential rollback
             $data = $this->read($table, '*', $conditions);
 
-            $where = '';
+            $where = 'WHERE ';
             foreach ($conditions as $key => $value) {
                 $where .= "$key = '$value' AND ";
             }
             $where = rtrim($where, 'AND ');
     
             $this->query = "
-            DELETE FROM $table 
-            WHERE $where;
+            DELETE FROM `$table`
             ";
+            $this->query .= (empty($conditions)) ? '' : $where;
             
             $stmt = $this->conn->prepare($this->query);
             $stmt->execute();
@@ -195,5 +198,17 @@ class CRUD {
 
     public function showQuery() {
         print_p(rtrim($this->query), '<hr/>');
+    }
+
+    public function customQuery($query, $data) {
+        try {
+            $this->query = $query;
+            $stmt = $this->conn->prepare($this->query);
+            $stmt->execute($data);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
     }
 }

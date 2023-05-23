@@ -20,4 +20,4 @@ $__PAGE__->load_full();
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "/inc/db_config.php");
 
-print_p($_SESSION);
+// print_p($_SESSION);
