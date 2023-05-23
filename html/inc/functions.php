@@ -1,21 +1,16 @@
 <?php
 
-<<<<<<< HEAD
-$conn = require_once("db_config.php");
-
-echo ($conn) ? "Connected!" : "Not Connected!";
-=======
-// Beautify print_r() output
-function print_p($array) {
-    echo "<pre>"; 
+//    Beautify outputs    \\
+// print_r()
+function print_p($array, $font_size = 1) {
+    echo "<pre style='font-size: ". $font_size ."em;'>"; 
     print_r($array);
     echo "</pre>";
 }
 
-// Print true value
-function print_tv($value) {
-    $returnVal = (empty($value)) ? "null" : $value;
-
-    echo "Value => " . $returnVal;
+// print_r() more readable-ish (h = human)
+function print_h($array, $font_size = 1) {
+    echo "<pre style='font-size: ". $font_size ."em;'>"; 
+    foreach ($array as $key => $value) echo "$key: $value\n"; 
+    echo "</pre>";
 }
->>>>>>> 57aaada (first commit from vmware server)
