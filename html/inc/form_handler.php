@@ -1,8 +1,20 @@
 <?php
+# Написано Мартан ван Версевелд #
 
-// return if post but empty
+
+// return if post xor empty
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST)) return;
-require($_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/inc/functions.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . "/inc/classes.php");
+session_start();
+
+
+function formErrorHandler($msg) {
+    $_SESSION["FORM_ERROR"] = $msg;
+    // header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit;
+}
+
 
 // Debug stuff
 print_p($_POST);
@@ -10,118 +22,111 @@ print_h(getallheaders());
 
 $GLOBALS['passwd_config'] = [
     'salt' => "4b58e936d051dd2ad039ef12d5c0174f",
-    'pepper' => "1166148776b0476d7a3a60be63d31ae4"
+    'pepper' => "1166148776b0476d7a3a60be63d31ae4",
+    'encryption' => CRYPT_SHA256
 ];
+
+// Connect to database
+$conn = require_once($_SERVER['DOCUMENT_ROOT'] . '/inc/db_config.php');
+$crud = new CRUD('localhost', 3306, 'pw_counter', 'pw_counter', 'YU@aHb01j6[UKXlu');
+
 
 // Registration
 if (isset($_POST['submit_register'])) {
     // Setting variables
-    $email = htmlspecialchars(str_replace(' ', '', $_POST['email']));
-    $firstname = htmlspecialchars(str_replace(' ', '', $_POST['firstname']));
-    $lastname = htmlspecialchars(str_replace(' ', '', $_POST['lastname']));
-    $role = htmlspecialchars(str_replace(' ', '', $_POST['role']));
-    $password = htmlspecialchars(str_replace(' ', '', $_POST['password']));
-    $password_conf = htmlspecialchars(str_replace(' ', '', $_POST['password_conf']));
+    $email = sanitizeInput($_POST['email']);
+    $firstname = sanitizeInput($_POST['firstname']);
+    $lastname = sanitizeInput($_POST['lastname']);
+    $role = sanitizeInput($_POST['role']);
+    $password = sanitizeInput($_POST['password']);
+    $password_conf = sanitizeInput($_POST['password_conf']);
 
     // Checking for errors
-    if (empty($email) || empty($firstname) || empty($lastname) || empty($role) || empty($password) || empty($password_conf)) {
-        echo "Email, Firstname, Lastname, Role, Passwords are empty!";
-        return;
+    if (strlen($email) > 32 || strlen($firstname) > 8 || strlen($lastname) > 24 || strlen($role) > 12 || strlen($password) > 32 || strlen($password_conf) > 32) {
+        formErrorHandler("Email, Firstname, Lastname, Role, Passwords are empty!");
     }
     if ($password != $password_conf) {
-        echo "Passwords don't match!";
-        return;
+        formErrorHandler("Passwords don't match!");
     }
-
-    // Connect to db when it passes all checks
-    $conn = require_once($_SERVER['DOCUMENT_ROOT'] . '/inc/db_config.php');
-    echo ($conn) ? 'Success!' : 'Error!';
+    
 
     // Checking for existing data
-    $sql = "
-    SELECT `email`, `firstname`, `lastname`
-    FROM `users`
-    WHERE `email` = :email;
-    ";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([ 
-        ':email' => $email
+    $results = $crud->read('users', ['id', 'email'], [
+        'email' => $email,
     ]);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     print_p($results);
 
     if (!empty($results)) {
-        echo "EMail is already registered!";
-        return;
+        formErrorHandler("EMail is already registered!");
     }
 
     // Password hashing
-    $password_db = password_hash($passwd_config['pepper'] . $password . $passwd_config['salt'], CRYPT_SHA256);
-    
-    // Sql
-    $sql = "
-    INSERT INTO `users` (`id`, `email`, `firstname`, `lastname`, `password`, `class`, `role`) 
-    VALUES (NULL, :email, :firstname, :lastname, :password, NULL, :role);
-    ";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([
-        ':email' => $email,
-        ':firstname' => $firstname,
-        ':lastname' => $lastname,
-        ':role' => $role,
-        ':password' => $password_db
-    ]);
+    $password_db = password_hash($passwd_config['pepper'] . $password . $passwd_config['salt'], $passwd_config['encryption']);
 
-    // Removing conn
-    $conn = null;
+    $insertId = $crud->create('users', [
+        'email' => $email,
+        'firstname' => $firstname,
+        'lastname' => $lastname,
+        'role' => $role,
+        'password' => $password_db
+    ]);
+    
+    if ($insertId) {
+        formErrorHandler("Successfully registered account!");
+    } else {
+        formErrorHandler("Failed to insert record. Please, try again later!");
+    }
 }
 
-// Registration
+// Login
 if (isset($_POST['submit_login'])) {
     // Setting variables
-    $email = htmlspecialchars(str_replace(' ', '', $_POST['email']));
-    $password = htmlspecialchars(str_replace(' ', '', $_POST['password']));
+    $email = sanitizeInput($_POST['email']);
+    $password = sanitizeInput($_POST['password']);
 
     // Checking for errors
     if (empty($email) || empty($password)) {
-        echo "Email or Password empty!";
-        return;
+        formErrorHandler("Email or Password empty!");
+    }
+    if (strlen($email) > 32 || strlen($password) > 32) {
+        formErrorHandler("Email or password to long!");
     }
 
-    // Connect to db when it passes all checks
-    $conn = require_once($_SERVER['DOCUMENT_ROOT'] . '/inc/db_config.php');
-    echo ($conn) ? 'Success!' : 'Error!';
-
     // Checking for existing data
-    $sql = "
-    SELECT `email`, `password`
-    FROM `users`
-    WHERE `email` = :email;
-    ";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([ 
-        ':email' => $email
+    $results = $crud->read('users', ['email', 'firstname', 'lastname', 'password', 'class', 'group_id', 'role'], [
+        'email' => $email,
     ]);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $crud->showQuery();
 
     print_p($results);
 
+    // Checking for more errors
     if (empty($results)) {
-        echo "EMail is not registered!";
-        return;
+        formErrorHandler("EMail is incorrect!");
     }
-    if (!password_verify($passwd_config['pepper'] . $password . $passwd_config['salt'], $results[0]['password'])) {
-        echo "Password is wrong!";
-        return;
+    if (!password_verify($passwd_config['pepper'] . $password . $passwd_config['salt'], $results['password'])) {
+        formErrorHandler("Password is incorrect!");
     }
-
-    // Password hashing
-    $password_db = password_hash($passwd_config['pepper'] . $password . $passwd_config['salt'], CRYPT_SHA256);
     
-    echo "Logged in!";
+    // Get group data. Will change to join but CRUD sucks.
+    $results_group = $crud->read('groups', '*', [
+        'id' => $results['group_id'],
+    ]);
+    $crud->showQuery();
+    print_p($_SESSION);
 
-    // Removing conn
-    $conn = null;
+    $_SESSION['USER_INFO'] = [
+        'email' => $results['email'],
+        'firstname' => $results['firstname'],
+        'lastname' => $results['lastname'],
+        'class' => $results['class'],
+        'group' => $results_group['name'],
+        'role' => $results['role']
+    ];
+
+    formErrorHandler("Logged in successfully!");
 }
 
+// Close database connection
+$crud = null; 

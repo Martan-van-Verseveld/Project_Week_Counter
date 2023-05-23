@@ -45,8 +45,12 @@
             border: none;
             background: none;
         }
+        #form_error {
+            color: red;
+        }
     </style>
     <form action="/inc/form_handler.php" method="POST" id="register" onload="passwordDifference();">
+        <p id="form_error"><?= (!empty($_SESSION['FORM_ERROR'])) ? $_SESSION['FORM_ERROR'] : ""; ?></p>
         <label for="firstname">E-Mail</label>
         <input required minlength="5" maxlength="32" type="email" name="email" id="email">
         <label for="firstname">Voornaam</label>
@@ -67,6 +71,7 @@
         <a href="#login">login</a>
     </form>
     <form action="/inc/form_handler.php" method="POST" id="login">
+        <p id="form_error"><?= (!empty($_SESSION['FORM_ERROR'])) ? $_SESSION['FORM_ERROR'] : ""; ?></p>
         <label for="firstname">E-Mail</label>
         <input required minlength="2" maxlength="32" type="email" name="email" id="email">
         <label for="password">Wachtwoord</label>
@@ -75,3 +80,4 @@
         <a href="#register">register</a>
     </form>
 </main>
+<?php $_SESSION["FORM_ERROR"] = null; ?>
