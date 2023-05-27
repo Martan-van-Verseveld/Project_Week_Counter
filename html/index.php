@@ -3,14 +3,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Autoload
-spl_autoload_register(function ($class) {
-    $class = str_replace('\\', '/', $class); // Convert namespace separators to directory separators
-    $file = $_SERVER['DOCUMENT_ROOT'] . "/inc/classes/" . $class . ".php";
-    if (file_exists($file)) {
-        require_once $file;
-    }
-});
+
+require_once "{$_SERVER['DOCUMENT_ROOT']}/src/inc/class_autoloader.inc.php";
 
 
 if (!isset($_GET['page']) || empty($_GET['page'])) {
@@ -19,15 +13,7 @@ if (!isset($_GET['page']) || empty($_GET['page'])) {
 }
 
 session_start();
-require_once($_SERVER['DOCUMENT_ROOT'] . "/inc/functions.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/src/inc/functions.inc.php");
 
-
-$GLOBALS['__PAGE__'] = new page(htmlspecialchars($_REQUEST['page']));
-
-$__PAGE__->load();
-
-require_once($_SERVER['DOCUMENT_ROOT'] . "/inc/db_config.php");
-
-echo "<div style='background: #99999966; padding: 1rem;'>";
-print_p($_SESSION);
-echo "</div>";
+$pageRenderer = new PageRenderer();
+$pageRenderer->renderPage(sanitizeInput($_GET['page']));
