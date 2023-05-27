@@ -1,40 +1,4 @@
 <main>
-    <style>
-        main {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-evenly;
-        }
-
-        div#user_container {
-            margin-top: 2.5%;
-            background: var(--teriary);
-            outline: .125rem solid var(--quaternary);
-            border-radius: 1rem;
-            width: 25%;
-            padding: 2.5%;
-        }
-        div#user_info {
-            background: none;
-            margin-bottom: 5%;
-
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-        p#info_title, p#requests_title {
-            font-family: monospace;
-            margin-bottom: 2.5%;
-            color: var(--quaternary);
-            font-weight: 600;
-        }
-        p.info_value, p.request_value {
-            color: var(--secondary);
-            font-family: monospace;
-            overflow-wrap: break-word;
-        }
-    </style>
-
     <?php
 
     $dbh = new Dbh();
@@ -48,7 +12,7 @@
         echo "
             <div id='user_container'>
                 <div id='user_info'>
-                    <p id='info_title'><b>[{$user['id']}]</b> {$user['firstname']} {$user['lastname']}</p>
+                    <p id='info_title'><a href='/index.php?page=user_form&id={$user['id']}'><b>[{$user['id']}]</b> {$user['firstname']} {$user['lastname']}</a></p>
         "; 
 
         foreach ($user as $key => $value) {
@@ -65,9 +29,7 @@
             echo "<p id='request_no-requests' class='request_value'><b>No outgoing requests for this user!</b></p>";
         } else {
             foreach ($requests as $request) {
-                foreach ($request as $key => $value) {
-                    echo "<p id='request_$key' class='request_value'><b>[". strtoupper($key) ."]:</b> $value</p>";
-                }
+                echo "<p id='request_value' class='request_value'><a href='index.php?page=group_form&id={$request['id']}'><b>[". strtoupper(($request['status'])) ."]</b> {$request['name']}</a></p>";
             }
         }
 

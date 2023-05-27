@@ -6,10 +6,10 @@ class PageRenderer
     private $incDir;
     private $pagesPath;
 
-    public function __construct()
+    public function __construct($pagesPath)
     {
         $this->incDir = $_SERVER['DOCUMENT_ROOT'] . "/src/inc";
-        $this->pagesPath = $_SERVER['DOCUMENT_ROOT'] . "/pages";
+        $this->pagesPath = $_SERVER['DOCUMENT_ROOT'] . $pagesPath;
     }
 
     public function renderPage($page)

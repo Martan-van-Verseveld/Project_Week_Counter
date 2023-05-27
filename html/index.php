@@ -15,5 +15,7 @@ if (!isset($_GET['page']) || empty($_GET['page'])) {
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT'] . "/src/inc/functions.inc.php");
 
-$pageRenderer = new PageRenderer();
+$pageRenderer = new PageRenderer("/pages");
 $pageRenderer->renderPage(sanitizeInput($_GET['page']));
+
+$_SESSION['ERROR'] = null;

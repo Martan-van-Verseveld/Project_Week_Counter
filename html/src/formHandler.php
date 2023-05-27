@@ -19,5 +19,15 @@ if (isset($_POST['submit-register'])) {
     $handleForm = $regHandler->handleForm($_POST);
 }
 
+if (isset($_POST['submit-group_create'])) {
+    $regHandler = new GroupHandler();
+    $handleForm = $regHandler->handleCreateForm($_POST);
+}
+
+if (isset($_POST['submit-group_update'])) {
+    $regHandler = new GroupHandler();
+    $handleForm = $regHandler->handleUpdateForm($_POST);
+}
+
 
 header("Location: {$_SERVER['HTTP_REFERER']}");

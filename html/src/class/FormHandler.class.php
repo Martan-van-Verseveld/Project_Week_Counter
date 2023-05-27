@@ -83,11 +83,13 @@ class FormHandler
         return true;
     }
 
-    protected function triggerError($msg, $error) {
+    protected function triggerError($msg, $error, $location = null) {
         session_start();
 
-        $_SESSION[$error] = $msg;
-        header("Location: {$_SERVER['HTTP_REFERER']}");
+        $_SESSION["ERROR"][$error] = $msg;
+
+        $location = ($location != null) ? $location : $_SERVER['HTTP_REFERER'];
+        header("Location: ". $location);
         exit;
     }
 }
