@@ -1,0 +1,408 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body:has(.wrapper) {
+    background-color: #ccc;
+}
+
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    display: grid;
+    place-content: center;
+    font-family: 'Helvetica', sans-serif;
+    font-weight: 600;
+}
+
+/*
+div {
+    width: 20vmax;
+    height: 20vmax;
+    background-color: black;
+    box-shadow: 0px 0px 10px 0px #000000;
+    border: 1px solid #fff;
+    border-radius: 15px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: justify;
+    color: #fff;
+    padding: 2em;
+}
+*/
+header {
+    width: 100vw;
+    height: 70px;
+    position: fixed;
+    top: 1.5em;
+}
+
+.topnav,
+.topnav>ul {
+    width: 100%;
+    height: 100%;
+}
+
+.topnav>ul {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 4em 0 4em;
+    position: relative;
+}
+
+.topnav li {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.topnav input[type="text"] {
+    width: 30vw;
+    height: 45px;
+    border-radius: 30px;
+    resize: none;
+    border: none;
+    outline: none;
+    padding: 0 0 0 1.2em;
+    border: 2px solid #000;
+    box-shadow: 0px 0px 2px 0px grey;
+    font-size: 1.05rem;
+}
+
+.topnav a {
+    color: #000;
+    text-decoration: none;
+    position: relative;
+    transition: all 250ms ease-in-out;
+}
+
+.user_opt {
+    width: 15em;
+    height: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#loginbtn {
+    margin-right: 3em;
+}
+
+li:has(#register) {
+    width: 80%;
+    height: 100%;
+}
+
+#register {
+    color: #fff;
+    width: 10em;
+    height: 100%;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.25s ease-in-out;
+}
+
+#register:hover {
+    border: 1px solid #000;
+    background-color: #fff;
+    color: #000;
+}
+
+.centerContent {
+    width: 40%;
+    height: 70%;
+    background-color: transparent;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.centerContent li {
+    width: 9em;
+}
+
+.centerContent a {
+    color: #000;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 0.9rem;
+}
+
+.line {
+    border-left: 2px solid #000;
+    height: 70%;
+}
+
+#logo {
+    width: 10%;
+    height: 80%;
+    position: absolute;
+    left: 2em;
+    background-image: url('../logos/logo.png');
+    background-position: center;
+    background-size: cover;
+}
+
+#logo:hover {
+    cursor: pointer;
+}
+
+.Hover {
+    transition: all 0.15s ease-in-out;
+}
+
+.Hover::after {
+    content: '';
+    width: 0;
+    height: 2px;
+    background-color: black;
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    transition: all 0.15s ease-in-out;
+}
+
+.Hover:hover::after {
+    width: 100%;
+}
+
+.Hover:hover {
+    transform: translateY(-3px);
+}
+
+#intro {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    position: absolute;
+    z-index: 9999;
+    color: #fff;
+    padding: 2em;
+    display: grid;
+    place-items: center;
+    display: none;
+}
+
+.close {
+    position: absolute;
+    right: 2em;
+    top: 2em;
+}
+
+.close:hover {
+    cursor: pointer;
+}
+
+.welcomeText {
+    width: 45%;
+    height: 45%;
+    padding: 3em;
+    text-align: justify;
+}
+
+.welcomeText > h1 {
+    text-align: center;
+    margin: 0.4em 1em 1.7em 1em;
+}
+
+.wrapper {
+    width: 40vmin;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    background-color: #fff;
+    box-shadow: 0px 0px 3px 0px #000;
+    border-radius: 20px;
+}
+
+#form, #reg_form {
+    display: flex;
+    width: 70%;
+    height: 80%;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1em;
+}
+
+#form > input[type=email], #form > input[type=password] {
+    border: 1px solid #000;
+    outline: none;
+    width: 100%;
+    height: 80px;
+    padding: 0 0 0 1em;
+    border-radius: 5px;
+}
+
+#form > input[type=submit], #reg_form > input[type=submit] {
+    padding: 1em 1.5em 1em 1.5em;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    outline: none;
+    border-radius: 25px;
+    font-weight: 700;
+    transition: 0.25s ease-in-out;
+}
+
+#form > input[type=submit]:hover, #reg_form > input[type=submit]:hover {
+    outline: 1px solid #000;
+    background-color: #fff;
+    color: #000;
+}
+
+input[type=submit]:hover {
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    border-radius: 10px;
+    width: 1.25em;
+    height: 1.25em;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    transform: translateY(-0.075em);
+}
+
+input[type=checkbox]:hover {
+    cursor: pointer;
+}
+
+input[type=checkbox]:checked {
+    background-color: black;
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.opts {
+    width: 100%;
+    height: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.opts > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    transform: scale(0.9);
+    position: absolute;
+    left: -3px
+}
+
+.opts > a {
+    float: right;
+    font-size: 0.79rem;
+    text-decoration: none;
+    color: #000;
+}
+
+.wrapper:has(#reg_form) {
+    width: 45vmin;
+    height: auto;
+}
+
+#reg_form > input:not(input[type=submit]) {
+    width: 100%;
+    height: 70px;
+    padding: 0 0 0 1em;
+    outline: none;
+    border: 1px solid #000;
+    border-radius: 3px;
+}
+
+#reg_form > input:not(input[type=submit]):hover {
+    border: 1px solid #555;
+}
+
+#reg_form > input:not(input[type=submit]):focus {
+    border: 1px solid #555;
+}
+
+#reg_form > h2, #form > h2 {
+    margin-bottom: 1em;
+}
+
+#reg_form > input[type=submit], #form > input[type=submit] {
+    margin-top: 1.2em;
+}
+
+.roles {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+}
+
+.roles > label {
+    width: 50%;
+    height: 2.8em;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+label:hover {
+    cursor: pointer;
+}
+
+.roles > label > input {
+    position: absolute;
+    display: none;
+}
+
+.roles span {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s ease-in-out;
+}
+
+.roles > label > input:checked + span {
+    background-color: #000;
+    border: none;
+    color: #fff;
+}
+
+#logout {
+    position: absolute;
+    right: 5em;
+}
+
+@media only screen and (min-width: 800px) {
+    .wrapper:has(#reg_form), .wrapper {
+        width: 55vmin;
+    }
+
+    .wrapper {
+        height: 50vmin;
+    }
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Registreren</title>
+    <style>
+        body {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <form action="" method="post" id="reg_form">
+            <h2>Registreren</h2>
+            <input type="email" name="email" placeholder="Email"/>
+            <input type="text" name="username" placeholder="Username"/>
+            <input type="password" name="password" placeholder="Password"/>
+            <input type="password" name="password_confirm" placeholder="Confirm password"/>
+            <div class="roles">
+                <label>
+                    <input type="radio" name="role" value="0"/>
+                    <span>Student</span>
+                </label>
+                <label>
+                    <input type="radio" name="role" value="1"/>
+                    <span>Teacher</span>
+                </label>
+            </div>
+            <input type="submit" value="Registreren">
+        </form>
+    </div>
+</body>
+</html>

@@ -3,6 +3,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+echo '<pre>';
+
+print_r($_SERVER);
 
 require_once "{$_SERVER['DOCUMENT_ROOT']}/src/inc/class_autoloader.inc.php";
 
