@@ -1,40 +1,47 @@
 <?php
 
-require_once "{$_SERVER['DOCUMENT_ROOT']}/src/class/UserInfo.class.php";
-
-class RegistrationHandler extends FormHandler
+class RegistrationHandler
 {
-    private $data;
+    public static function processForm($postData): bool
+    {
+        $postData = DataProcessor::sanitizeData($postData);
 
-    public function handleForm($postData) {
-        $postData = FormHandler::sanitizeData($postData);
-        
-        if (!FormHandler::validateFields(['email', 'firstname', 'lastname', 'password', 'password_conf'], $postData)) {
-            FormHandler::triggerError("Required fields not present!", "REGISTER_ERROR");
-            return false;
-        }
-        
-        if (!FormHandler::validateEmail($postData['email'])) {
-            FormHandler::triggerError("EMail format invalid!", "REGISTER_ERROR");
-            return false;
-        }
-        if (FormHandler::registeredEmail($postData['email'])) {
-            FormHandler::triggerError("EMail already registered!", "REGISTER_ERROR");
-            return false;
-        }
-        if (!FormHandler::comparePasswords($postData['password'], $postData['password_conf'])) {
-            FormHandler::triggerError("Passwords don't match, try again!", "REGISTER_ERROR");
-            return false;
+        if (
+            !DataProcessor::validateFields($postData, ['email', 'firstname', 'lastname', 'password', 'password_conf', 'role'])
+            || !DataProcessor::validateType([$postData['firstname'] => FILTER_VALIDATE_REGEXP])
+            || !DataProcessor::validateType([$postData['lastname'] => FILTER_VALIDATE_REGEXP])
+            || !DataProcessor::validateType([$postData['email'] => FILTER_VALIDATE_EMAIL])
+            || !DataProcessor::validateType([$postData['password'] => FILTER_VALIDATE_REGEXP])
+            || !DataProcessor::validateType([$postData['password_conf'] => FILTER_VALIDATE_REGEXP])
+            || !DataProcessor::validateType([$postData['role'] => FILTER_VALIDATE_REGEXP])
+        ) {
+            return self::handleError("An error occured, try again later.");
         }
 
-        $userInfo = new UserInfo;
-        if (!$userInfo->createUser($postData)) {
-            FormHandler::triggerError("Record was not inserted, try again later!", "REGISTER_ERROR");
-            return false;
+        if ($postData['password'] !== $postData['password_conf']) {
+            return self::handleError("Passwords do not match.");
         }
 
+        if (DataProcessor::registeredValue('user', ['email' => $postData['email']])) {
+            return self::handleError("EMail already registered.");
+        }
 
-        FormHandler::triggerError("Account registered!", "REGISTER_ERROR");
+        if (!User::create($postData)) {
+            return self::handleError("Failed to insert record. Try again later!");
+        }
+
+        self::handleError("Account registered.", "/index.php?page=login");
         return true;
+    }
+
+    private static function handleError($msg, $location = null): bool
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        $_SESSION["ERROR"]["REGISTER_ERROR"] = $msg;
+
+        $location = ($location != null) ? $location : $_SERVER['HTTP_REFERER'];
+        Redirect::to($location);
+        return false;
     }
 }

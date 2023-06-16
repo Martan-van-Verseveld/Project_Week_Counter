@@ -4,39 +4,50 @@ class Dbh
 {
     protected static $pdo;
 
-    private $HOST, $PORT, $DBNAME, $USER, $PASSWD;
-
-    public function __construct() 
+    public static function startConnection()
     {
-        $this->HOST =   '127.0.0.1';
-        $this->PORT =   3306; 
-        $this->DBNAME = 'pw_counter'; 
-        $this->USER =   'pw_counter'; 
-        $this->PASSWD = 'YU@aHb01j6[UKXlu';
-    }
-
-    public function startConnection() 
-    {
-        try {
-            self::$pdo = new PDO("mysql:host={$this->HOST};port={$this->PORT};dbname={$this->DBNAME}", $this->USER, $this->PASSWD);
+        $dsn = "mysql:host=". DB_HOST .";port=". DB_PORT .";dbname=". DB_NAME;
+        $user = DB_USER;
+        $password = DB_PASS;
     
+        try {
+            self::$pdo = new PDO($dsn, $user, $password);
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $e) {
-            echo "pdoection failed: " . $e->getMessage();
+            echo "Connection failed: " . $e->getMessage();
             return false;
         }
-
+    
         return true;
     }
     
-    public function getConnection()
+    public static function getConnection()
     {
         return self::$pdo;
     }
 
-    public function stopConnection() {
+    public static function stopConnection() {
         self::$pdo = null;
-        
-        return (self::$pdo == null) ? true : false;
+        return self::$pdo === null;
+    }
+
+    
+    public static function buildWhereClause($conditions): string
+    {
+        $conditions = DataProcessor::sanitizeData($conditions);
+        $where = '';
+    
+        if (!empty($conditions)) {
+            $where = 'WHERE ';
+            $placeholders = [];
+    
+            foreach ($conditions as $key => $value) {
+                $placeholders[] = "$key = '$value'";
+            }
+    
+            $where .= implode(' AND ', $placeholders);
+        }
+    
+        return $where;
     }
 }

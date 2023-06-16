@@ -4,27 +4,60 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logos/favicon.png">
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/t_style.css">
     <link rel="stylesheet" href="/libs/bootstrap/bootstrap_icons.css">
-    <script src="/js/functions.js"></script>
+    <script src="https://kit.fontawesome.com/ffa3a463b6.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/functions.js"></script>
+    <script type="text/javascript" src="/js/welcomeMsg.js" defer></script>
     <title><?= ucfirst($_GET['page']) ?></title>
 </head>
 <body>
     <header>
-        <nav>
+        <nav class="topnav">
             <ul>
-                <?php
-
-                    $pages = array_diff(scandir("{$_SERVER['DOCUMENT_ROOT']}/pages"), ['.', '..']);
-
-                    foreach ($pages as $page) {
-                        $page = basename($page, '.php');
-                        echo "<li". (($page == $_GET['page']) ? " id='active'" : "") ."><a href='/index.php?page=$page'>". ucfirst($page) ."</a></li>";
-                    }
-
-                ?>
+                <div id="logo">
+                    <a href="/index.php?page=home"></a>
+                </div>
+                <div class="centerContent">
+                    <li>
+                        <a href="/index.php?page=scores" class="Hover">Scores</a>
+                    </li>
+                    <div class="line"></div>
+                    <?php if (!empty($_SESSION['user'])): ?>
+                    <li>
+                        <a href="/index.php?page=<?= ($_SESSION['user']['role'] == 'teacher') ? 'db_teacher' : 'db_student'; ?>" class="Hover">Dashboard</a>
+                    </li>
+                    <div class="line"></div>
+                    <?php endif; ?>
+                    <li>
+                        <a href="/index.php?page=groups" class="Hover">Groups</a>
+                    </li>
+                    <div class="line"></div>
+                    <li>
+                        <a href="/index.php?page=help" id="help" class="Hover">Help</a>
+                    </li>
+                    <div class="line"></div>
+                    <li>
+                        <a href="/index.php?page=about" class="Hover">About</a>
+                    </li>
+                </div>
+                <?php if (empty($_SESSION['user'])): ?>
+                <div class="user_opt">
+                    <li id="loginbtn">
+                        <a href="/index.php?page=login" id="login" class="Hover">Login</a>
+                    </li>
+                    <li>
+                        <a href="/index.php?page=register" id="register">Register</a>
+                    </li>
+                </div>
+                <?php else: ?>
+                <div class="user_opt">
+                    <li>
+                        <a href="/index.php?page=logout" id="register">Logout</a>
+                    </li>
+                </div>
+                <?php endif; ?>
             </ul>
         </nav>
-        <!-- <h1><a href="<?= isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/index.php?page=home' ?>"><?= ucfirst($_GET['page']) ?> page</a></h1> -->
     </header>

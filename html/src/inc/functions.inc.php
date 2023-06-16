@@ -15,3 +15,15 @@ function sanitizeInput($input)
 {
     return htmlspecialchars(trim($input));
 }
+
+
+// Testing
+function timeCode($function) {
+    $bt = microtime(true);
+
+    // Code to test
+    $function();
+
+    $et = microtime(true);
+    echo "\nCompleted in ". ($et - $bt) ." microseconds.";
+}

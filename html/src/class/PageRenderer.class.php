@@ -3,24 +3,26 @@
 
 class PageRenderer
 {
-    private $incDir;
-    private $pagesPath;
+    private static $incDir;
+    private static $pagesPath;
 
-    public function __construct($pagesPath)
+    public static function initialize()
     {
-        $this->incDir = $_SERVER['DOCUMENT_ROOT'] . "/src/inc";
-        $this->pagesPath = $_SERVER['DOCUMENT_ROOT'] . $pagesPath;
+        self::$incDir = $_SERVER['DOCUMENT_ROOT'] . "/src/inc";
+        self::$pagesPath = $_SERVER['DOCUMENT_ROOT'] . "/pages";
     }
 
-    public function renderPage($page)
+    public static function renderPage($page)
     {
         $page = htmlspecialchars(trim($page));
 
-        $pagePath = "{$this->pagesPath}/$page.php";
-        $errorPath = "{$this->pagesPath}/404.php";
+        $pagePath = self::$pagesPath . "/$page.php";
+        $errorPath = $_SERVER['DOCUMENT_ROOT'] . "/src/errors/404.php";
 
-        require_once "{$this->incDir}/header.inc.php";
+        require_once self::$incDir . "/header.inc.php";
         require_once (file_exists($pagePath)) ? $pagePath : $errorPath;
-        require_once "{$this->incDir}/footer.inc.php";
+        require_once self::$incDir . "/footer.inc.php";
     }
 }
+
+PageRenderer::initialize();
