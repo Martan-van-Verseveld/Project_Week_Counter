@@ -1,6 +1,6 @@
 <?php
 
-class MemberHandler
+class MemberHandler extends Handler
 {    
     public static function removeMember($postData, $session) 
     {
@@ -12,67 +12,95 @@ class MemberHandler
             || !DataProcessor::validateFields($session['user'], ['id'])
             || !DataProcessor::validateType([$postData['user_id'] => FILTER_VALIDATE_INT])
         ) {
-            return self::handleError("An error occured, try again later.");
+            return parent::handleError("MEMBER_ERROR", "An error occured, try again later.");
         }
 
         if (
             !DataProcessor::registeredValue('group_info', ['id' => $postData['group_id']])
             || !DataProcessor::registeredValue('user', ['id' => $postData['user_id']])
         ) {
-            return self::handleError("Group or user does not exist...");
+            return parent::handleError("MEMBER_ERROR", "Group or user does not exist...");
+        }
+
+        if (Member::isOwner($postData['user_id'], $postData['group_id'])) {
+            parent::handleError("MEMBER_ERROR", "This user is the owner of this group. You cannot remove this user.");
         }
 
         if (
             !DataProcessor::registeredValue('group_member', [
-                'user_id' => $postData['group_id'], 
-                'role' => "owner", 
-                'group_id' => "group_id"
-            ])
-        ) {
-            return self::handleError("You do not have the authorization to remove users from a group.");
-        }
-
-        if (
-            DataProcessor::registeredValue('group_member', [
-                'user_id' => $postData['user_id'], 
+                'user_id' => $session['user']['id'], 
                 'role' => "owner", 
                 'group_id' => $postData['group_id']
             ])
         ) {
-            self::updateRole(['role' => "owner", ]);
-            self::handleError("Member removed!");
+            return parent::handleError("MEMBER_ERROR", "You do not have the authorization to remove users from a group.");
         }
 
         Member::delete($postData);
 
-        self::handleError("Member removed!");
+        parent::handleError("MEMBER_ERROR", "Member removed!");
         return true;
     }
 
-    public static function updateRole($data) 
+    public static function updateOwnership($postData, $session) 
     {
-        $data = DataProcessor::sanitizeData($data);
+        $postData = DataProcessor::sanitizeData($postData);
 
-        Member::updateRole([
-            'role' => $data['role'], 
-            'user_id' => $data['user_id'],
-            'group_id' => $data['group_id']
-        ]);
+        if (
+            !DataProcessor::validateFields($postData, ['user_id'])
+            || !DataProcessor::validateFields($session['user'], ['id'])
+            || !DataProcessor::validateType([$postData['user_id'] => FILTER_VALIDATE_INT])
+        ) {
+            return parent::handleError("MEMBER_ERROR", "An error occured, try again later.");
+        }
+
+        if (
+            !DataProcessor::registeredValue('group_member', [
+                'user_id' => $session['user']['id'], 
+                'role' => "owner", 
+                'group_id' => $postData['group_id']
+            ])
+        ) {
+            return parent::handleError("MEMBER_ERROR", "You do not have the authorization to transfer ownership to other users in this group.");
+        }
+
+        if (Member::isOwner($postData['user_id'], $postData['group_id'])) {
+            parent::handleError("MEMBER_ERROR", "This user is already the owner");
+        }
+
+        if (!Member::updateOwnership([
+            'user_id' => $postData['user_id'],
+            'group_id' => $postData['group_id']
+        ])) {
+            parent::handleError("MEMBER_ERROR", "An error occured, try again later.");
+        }
+
+        parent::handleError("MEMBER_ERROR", "Member has became the new owner!");
+        return true;
     }
 
-    public static function isMember()
+    public static function leaveMember($postData, $session)
     {
+        $postData = DataProcessor::sanitizeData($postData);
+        $session = DataProcessor::sanitizeData($session);
 
-    }
-    
-    private static function handleError($msg, $location = null): bool
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (
+            !DataProcessor::validateFields($postData, ['user_id', 'group_id'])
+            || !DataProcessor::validateFields($session['user'], ['id'])
+            || !DataProcessor::validateType([$postData['user_id'] => FILTER_VALIDATE_INT])
+            || !DataProcessor::validateType([$postData['group_id'] => FILTER_VALIDATE_INT])
+        ) {
+            return parent::handleError("MEMBER_ERROR", "An error occured, try again later.");
+        }
 
-        $_SESSION["ERROR"]["MEMBER_ERROR"] = $msg;
+        if (Member::isOwner($postData['user_id'], $postData['group_id'])) {
+            parent::handleError("MEMBER_ERROR", "This user is the owner of the group.");
+        }
 
-        $location = ($location != null) ? $location : $_SERVER['HTTP_REFERER'];
-        Redirect::to($location);
-        return false;
+        Member::delete($postData);
+        
+
+        parent::handleError("MEMBER_ERROR", "Member left");
+        return true;
     }
 }

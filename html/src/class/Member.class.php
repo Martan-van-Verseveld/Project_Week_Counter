@@ -55,13 +55,18 @@ class Member
         return ($insert > 0);
     }
 
-    public static function updateRole($data) {
+    public static function updateOwnership($data) 
+    {
         $data = DataProcessor::sanitizeData($data);
 
         // Prepare the SQL query
         $query = "
             UPDATE `group_member`
-            SET role = :role
+            SET role = 'member'
+            WHERE role = 'owner' AND group_id = :group_id;
+
+            UPDATE `group_member`
+            SET role = 'owner'
             WHERE user_id = :user_id AND group_id = :group_id;
         ";
 
@@ -70,12 +75,29 @@ class Member
         $sto->execute([
             ':user_id' => $data['user_id'],
             ':group_id' => $data['group_id'],
-            ':role' => $data['role']
+            ':role' => 'owner'
         ]);
 
         // Check insert success
         $insert = $sto->rowCount();
         return ($insert > 0);
+    }
+
+    public static function isMember($userId, $groupId) 
+    {
+        return DataProcessor::registeredValue('group_member', [
+            'user_id' => $userId,
+            'group_id' => $groupId
+        ]);
+    }
+
+    public static function isOwner($userId, $groupId) 
+    {
+        return DataProcessor::registeredValue('group_member', [
+            'user_id' => $userId,
+            'group_id' => $groupId,
+            'role' => 'owner'
+        ]);
     }
 }
 

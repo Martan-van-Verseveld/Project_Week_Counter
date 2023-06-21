@@ -1,6 +1,6 @@
 <?php
 
-class RequestHandler
+class RequestHandler extends Handler
 {
     public static function processRequest($postData, $session): bool
     {
@@ -12,30 +12,30 @@ class RequestHandler
             || !DataProcessor::validateFields($session['user'], ['id'])
             || !DataProcessor::validateType([$postData['group_id'] => FILTER_VALIDATE_REGEXP])
         ) {
-            return self::handleError("An error occured, try again later.");
+            return parent::handleError("REQUEST_ERROR", "An error occured, try again later.");
         }
 
         if (
             !DataProcessor::registeredValue('group_info', ['id' => $postData['group_id']])
         ) {
-            return self::handleError("Group does not exist...");
+            return parent::handleError("REQUEST_ERROR", "Group does not exist...");
         }
 
         if (
             DataProcessor::registeredValue('group_request', ['group_id' => $postData['group_id'], 'user_id' => $session['user']['id']])
         ) {
-            return self::handleError("Sorry you already have a request going out for this group!");
+            return parent::handleError("REQUEST_ERROR", "Sorry you already have a request going out for this group!");
         }
 
         if (
             DataProcessor::registeredValue('group_member', ['group_id' => $postData['group_id'], 'user_id' => $session['user']['id']])
         ) {
-            return self::handleError("Sorry you already a member of this group!");
+            return parent::handleError("REQUEST_ERROR", "Sorry you already a member of this group!");
         }
 
-        self::sendRequest($postData['group_id'], $session['user']['id']);
+        self::sendRequest($postData['group_id'], $session['user']['id'], 'request');
 
-        self::handleError("Request sent");
+        parent::handleError("REQUEST_ERROR", "Request sent");
         return true;
     }
     
@@ -49,24 +49,24 @@ class RequestHandler
             || !DataProcessor::validateFields($session['user'], ['id'])
             || !DataProcessor::validateType([$postData['user_id'] => FILTER_VALIDATE_INT])
         ) {
-            return self::handleError("An error occured, try again later.");
+            return parent::handleError("REQUEST_ERROR", "An error occured, try again later.");
         }
 
         // if (
         //     !DataProcessor::registeredValue('group_info', ['id' => $postData['group_id']])
         // ) {
-        //     return self::handleError("Group does not exist...");
+        //     return parent::handleError("REQUEST_ERROR", "Group does not exist...");
         // }
 
         // if (
         //     DataProcessor::registeredValue('group_request', ['group_id' => $postData['group_id'], 'user_id' => $session['user']['id']])
         // ) {
-        //     return self::handleError("Sorry you already have a request going out for this group!");
+        //     return parent::handleError("REQUEST_ERROR", "Sorry you already have a request going out for this group!");
         // }
 
         Request::remove($postData);
 
-        self::handleError("Request declined!");
+        parent::handleError("REQUEST_ERROR", "Request declined!");
         return true;
     }
     
@@ -80,38 +80,94 @@ class RequestHandler
             || !DataProcessor::validateFields($session['user'], ['id'])
             || !DataProcessor::validateType([$postData['user_id'] => FILTER_VALIDATE_INT])
         ) {
-            return self::handleError("An error occured, try again later.");
+            return parent::handleError("REQUEST_ERROR", "An error occured, try again later.");
         }
 
         if (
             !DataProcessor::registeredValue('group_info', ['id' => $postData['group_id']])
             || !DataProcessor::registeredValue('user', ['id' => $postData['user_id']])
         ) {
-            return self::handleError("Group or user does not exist...");
+            return parent::handleError("REQUEST_ERROR", "Group or user does not exist...");
         }
 
         Request::accept($postData);
 
-        self::handleError("Request accepted!");
+        parent::handleError("REQUEST_ERROR", "Request accepted!");
         return true;
     }
 
-    private static function sendRequest($groupId, $userId) 
+    public static function inviteRequest($postData, $session) 
     {
+        $postData = DataProcessor::sanitizeData($postData);
+        $session = DataProcessor::sanitizeData($session);
+
+        if (
+            !DataProcessor::validateFields($postData, ['group_id'])
+            || !DataProcessor::validateFields($session['user'], ['id'])
+            || !DataProcessor::validateType([$postData['group_id'] => FILTER_VALIDATE_REGEXP])
+        ) {
+            return parent::handleError("REQUEST_ERROR", "An error occured, try again later.");
+        }
+
+        self::sendRequest($postData['group_id'], $postData['user_id'], 'invite');
+
+        parent::handleError("REQUEST_ERROR", "Request sent");
+        return true;
+    }
+
+    public static function inviteAccept($postData, $session) 
+    {
+        $postData = DataProcessor::sanitizeData($postData);
+        $session = DataProcessor::sanitizeData($session);
+
+        if (
+            !DataProcessor::validateFields($postData, ['group_id'])
+            || !DataProcessor::validateFields($session['user'], ['id'])
+            || !DataProcessor::validateType([$postData['group_id'] => FILTER_VALIDATE_INT])
+        ) {
+            return parent::handleError("REQUEST_ERROR", "An error occured, try again later.");
+        }
+
+        Request::acceptInvite($postData['user_id'], $postData['group_id']);
+
+        parent::handleError("REQUEST_ERROR", "Invite accepted");
+        return true;
+    }
+
+    public static function inviteDecline($postData, $session) 
+    {
+        $postData = DataProcessor::sanitizeData($postData);
+        $session = DataProcessor::sanitizeData($session);
+
+        if (
+            !DataProcessor::validateFields($postData, ['group_id'])
+            || !DataProcessor::validateFields($session['user'], ['id'])
+            || !DataProcessor::validateType([$postData['group_id'] => FILTER_VALIDATE_INT])
+        ) {
+            return parent::handleError("REQUEST_ERROR", "An error occured, try again later.");
+        }
+
+        Request::declineInvite($postData['user_id'], $postData['group_id']);
+
+        parent::handleError("REQUEST_ERROR", "Invite declined");
+        return true;
+    }
+
+    private static function sendRequest($groupId, $userId, $type) 
+    {
+        if (
+            DataProcessor::registeredValue('group_request', ['user_id' => $userId, 'group_id' => $groupId])
+            || DataProcessor::registeredValue('group_member', ['user_id' => $userId])
+        ) {
+            parent::handleError('REQUEST_ERROR', 'This user is already in a group.');
+        }
+        
         Request::create([
             'user_id' => $userId, 
-            'group_id' => $groupId
+            'group_id' => $groupId, 
+            'type' => $type
         ]);
-    }
-    
-    private static function handleError($msg, $location = null): bool
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
 
-        $_SESSION["ERROR"]["REQUEST_ERROR"] = $msg;
-
-        $location = ($location != null) ? $location : $_SERVER['HTTP_REFERER'];
-        Redirect::to($location);
-        return false;
+        parent::handleError('REQUEST_ERROR', 'User was invited.');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class LoginHandler
+class LoginHandler extends Handler
 {
     public static function processForm($postData): bool
     {
@@ -11,20 +11,20 @@ class LoginHandler
             || !DataProcessor::validateType([$postData['email'] => FILTER_VALIDATE_EMAIL])
             || !DataProcessor::validateType([$postData['password'] => FILTER_VALIDATE_REGEXP])
         ) {
-            return self::handleError("An error occured, try again later.");
+            return parent::handleError("LOGIN_ERROR", "An error occured, try again later.");
         }
 
         if (
             !DataProcessor::registeredValue('user', ['email' => $postData['email']])
             || !self::verifyPassword($postData)
         ) {
-            return self::handleError("EMail or password incorrect.");
+            return parent::handleError("LOGIN_ERROR", "EMail or password incorrect.");
         }
 
         if (session_status() === PHP_SESSION_NONE) session_start();
         $_SESSION['user'] = self::setSession($postData['email']);
 
-        self::handleError("Logged in.", "/index.php?page=home");
+        parent::handleError("LOGIN_ERROR", "Logged in.", "/index.php?page=home");
         return true;
     }
 
@@ -46,17 +46,6 @@ class LoginHandler
 
         $passed = password_verify(PASS_PEPPER . $data['password'] . PASS_SALT, $results['password']);
         return $passed;
-    }
-
-    private static function handleError($msg, $location = null): bool
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-
-        $_SESSION["ERROR"]["LOGIN_ERROR"] = $msg;
-
-        $location = ($location != null) ? $location : $_SERVER['HTTP_REFERER'];
-        Redirect::to($location);
-        return false;
     }
 
     private static function setSession($userEmail): array

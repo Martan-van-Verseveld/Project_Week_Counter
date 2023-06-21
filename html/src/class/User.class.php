@@ -33,6 +33,8 @@ class User
             ':password' => $hashed_passwd
         ]);
 
+        Settings::create(self::$pdo->lastInsertId());
+
         // Check insert success
         $insert = $sto->rowCount();
         return ($insert > 0);
@@ -56,6 +58,45 @@ class User
         ]);
 
         $results = $sto->fetch(PDO::FETCH_ASSOC);
+        return $results;
+    }
+
+    public static function getUsers() 
+    {
+        // Prepare the SQL query
+        $query = "
+            SELECT id, firstname, lastname, email
+            FROM `user`;
+        ";
+
+        // Execute statement
+        $sto = self::$pdo->prepare($query);
+        $sto->execute();
+
+        $results = $sto->fetchAll(PDO::FETCH_ASSOC);
+        return $results;
+    }
+
+    public static function getInvUsers()
+    {
+        // Prepare the SQL query
+        $query = "
+            SELECT `user`.id, firstname, lastname, email
+            FROM `user`
+            INNER JOIN `settings` ON `settings`.user_id = `user`.id
+            WHERE `settings`.invites = 1
+            AND NOT EXISTS (
+                SELECT 1
+                FROM `group_member`
+                WHERE `group_member`.user_id = `user`.id
+            );
+        ";
+
+        // Execute statement
+        $sto = self::$pdo->prepare($query);
+        $sto->execute();
+
+        $results = $sto->fetchAll(PDO::FETCH_ASSOC);
         return $results;
     }
 }

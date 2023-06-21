@@ -1,7 +1,5 @@
-
-
-    <footer>
-        <?= "&copy; Copyright | ????-" . date("Y") . "\n" ?>
-    </footer>    
+<footer>
+    <?= "&copy; Copyright | ????-" . date("Y") . "\n" ?>
+</footer>    
 </body>
 </html>

@@ -10,12 +10,9 @@ class Group
         self::$pdo = Dbh::getConnection();
     }
 
-    public static function create($data): bool 
+    public static function create($data) 
     {
         $data = DataProcessor::sanitizeData($data);
-
-        // Hash password
-        $hashed_passwd = password_hash(PASS_PEPPER . $data['password'] . PASS_SALT, PASS_ENC);
 
         // Prepare the SQL query
         $query = "
@@ -30,9 +27,24 @@ class Group
             ':description' => $data['description']
         ]);
 
+        $lastId = self::$pdo->lastInsertId();
+
         // Check insert success
         $insert = $sto->rowCount();
-        return ($insert > 0);
+        if ($insert <= 0) return false;
+
+        $groupId = self::$pdo->lastInsertId();
+        Member::create(([
+            'user_id' => $data['user_id'],
+            'group_id' => $groupId
+        ]));
+
+        $ownership = Member::updateOwnership([
+            'user_id' => $data['user_id'],
+            'group_id' => $groupId
+        ]);
+
+        return $lastId;        
     }
 
     public static function getGroups()
@@ -74,6 +86,29 @@ class Group
         $sto = self::$pdo->prepare($query);
         $sto->execute([
             ':groupId' => $groupId
+        ]);
+
+        $fetch = $sto->fetch(PDO::FETCH_ASSOC);
+
+        return $fetch;
+    }
+
+    public static function getUserGroup($userId)
+    {
+        $groupId = DataProcessor::sanitizeData($userId);
+
+        // Prepare the SQL query
+        $query = "
+            SELECT `group_info`.*
+            FROM `group_member`
+            INNER JOIN `group_info` ON `group_info`.id = `group_member`.group_id
+            WHERE `group_member`.user_id = :userId;
+        ";
+
+        // Execute statement
+        $sto = self::$pdo->prepare($query);
+        $sto->execute([
+            ':userId' => $userId
         ]);
 
         $fetch = $sto->fetch(PDO::FETCH_ASSOC);
@@ -142,6 +177,28 @@ class Group
             "Requests" => self::getGroupRequests($groupId)
         ];
         return $results;
+    }
+
+    public static function delete($groupId)
+    {
+        $groupId = DataProcessor::sanitizeData($groupId);
+
+        // Prepare the SQL query
+        $query = "
+            DELETE FROM `group_info`
+            WHERE group_id = :group_id
+            LIMIT 1;
+        ";
+
+        // Execute statement
+        $sto = self::$pdo->prepare($query);
+        $sto->execute([
+            ':group_id' => $groupId
+        ]);
+
+        // Check insert success
+        $insert = $sto->rowCount();
+        return ($insert > 0);
     }
 }
 
