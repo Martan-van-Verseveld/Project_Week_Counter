@@ -32,7 +32,7 @@ foreach ($groups as $group) {
         'user_id' => $_SESSION['user']['id'], 
         'group_id' => $group['id']
     ])) {
-        echo "<a href='/index.php?page=group_info&id={$group['id']}'>Go to your group</a>";
+        echo "<a href='/index.php?page=group&id={$group['id']}'>Go to your group</a>";
     }
 
     if (isset($_SESSION['user']) && !DataProcessor::registeredValue('group_member', ['user_id' => $_SESSION['user']['id']])) {
