@@ -39,13 +39,13 @@ class DataProcessor
 
     public static function validateFields($data, $fields): bool
     {
-        // Check if post has all required fields
+        // Check if $data has all required $fields
         foreach ($fields as $field) {
-            if (!isset($data[$field]) || empty($data[$field])) {
+            if (!array_key_exists($field, $data)) {
                 return false;
             }
         }
-
+    
         return true;
     }
 
@@ -76,8 +76,13 @@ class DataProcessor
         $sto->execute();
         
         $results = $sto->rowCount();
-
         return ($results > 0);
+    }
+
+    public static function hashPassword($password) 
+    {
+        $hash = password_hash(PASS_PEPPER . $password . PASS_SALT, PASS_ENC);
+        return $hash;
     }
 }
 

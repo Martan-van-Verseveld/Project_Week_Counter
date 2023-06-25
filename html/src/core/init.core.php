@@ -15,6 +15,7 @@ DEFINE('PASS_SALT', '4b58e936d051dd2ad039ef12d5c0174f');
 DEFINE('PASS_PEPPER', '1166148776b0476d7a3a60be63d31ae4');
 
 # Debugging
+DEFINE('PDO_DEBUG', true);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -24,3 +25,4 @@ require_once "{$_SERVER['DOCUMENT_ROOT']}/src/inc/class_autoloader.inc.php";
 
 # Session
 (session_status() == 0) ? session_start() : null;
+$_SESSION['REFERER'] = '';

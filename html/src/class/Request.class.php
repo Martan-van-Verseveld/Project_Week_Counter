@@ -29,8 +29,8 @@ class Request
         ]);
 
         // Check insert success
-        $insert = $sto->rowCount();
-        return ($insert > 0);
+        // $insert = $sto->rowCount();
+        return self::$pdo->lastInsertId();
     }
 
     public static function remove($data) 

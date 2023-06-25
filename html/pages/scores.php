@@ -5,6 +5,13 @@ $scores = Score::getScores($orderType);
 
 // print_p($scores);
 
+if (DataProcessor::registeredValue('user', [
+    'id' => $_SESSION['user']['id'],
+    'role' => 'teacher'
+])) {
+    echo "<a href=''>Add scores</a>";
+}
+
 foreach ($scores as $score) {
     echo "
         <div class='group'>

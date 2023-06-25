@@ -12,4 +12,8 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
 PageRenderer::renderPage(sanitizeInput($_GET['page']));
 
-print_p($_SESSION);
+if (Session::get('REFERER') != $_SERVER['REQUEST_URI']) {
+    Session::put('REFERER', $_SERVER['REQUEST_URI']);
+}
+
+// print_p($_SESSION);

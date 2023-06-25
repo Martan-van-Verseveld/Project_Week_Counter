@@ -32,9 +32,10 @@ class Member
         return ($insert > 0);
     }
 
-    public static function delete($data) 
+    public static function delete($userId, $groupId) 
     {
-        $data = DataProcessor::sanitizeData($data);
+        $userId = DataProcessor::sanitizeData($userId);
+        $groupId = DataProcessor::sanitizeData($groupId);
 
         // Prepare the SQL query
         $query = "
@@ -43,12 +44,16 @@ class Member
             LIMIT 1;
         ";
 
-        // Execute statement
-        $sto = self::$pdo->prepare($query);
-        $sto->execute([
-            ':user_id' => $data['user_id'],
-            ':group_id' => $data['group_id']
-        ]);
+        try {
+            // Execute statement
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':user_id' => $userId,
+                ':group_id' => $groupId
+            ]);
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
 
         // Check insert success
         $insert = $sto->rowCount();

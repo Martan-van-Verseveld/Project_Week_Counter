@@ -10,6 +10,32 @@ class Score
         self::$pdo = Dbh::getConnection();
     }
 
+    public static function create($groupId)
+    {
+        $groupId = DataProcessor::sanitizeData($groupId);
+
+        // Prepare the SQL query
+        $query = "
+            INSERT INTO `score` (group_id)
+            VALUES (:group_id);
+        ";
+
+        try {
+            // Execute statement
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':group_id' => $groupId
+            ]);
+            Session::pdoDebug("No errors.");
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
+
+        // Check insert success
+        $insert = $sto->rowCount();
+        return ($insert > 0);
+    }
+
     public static function getScores($orderStyle = "scoreDESC")
     {
         $query = "

@@ -36,7 +36,7 @@ class MemberHandler extends Handler
             return parent::handleError("MEMBER_ERROR", "You do not have the authorization to remove users from a group.");
         }
 
-        Member::delete($postData);
+        Member::delete($postData['user_id'], $postData['group_id']);
 
         parent::handleError("MEMBER_ERROR", "Member removed!");
         return true;
@@ -94,13 +94,19 @@ class MemberHandler extends Handler
         }
 
         if (Member::isOwner($postData['user_id'], $postData['group_id'])) {
-            parent::handleError("MEMBER_ERROR", "This user is the owner of the group.");
+            if (Group::getMemberCount($postData['group_id']) > 1) {
+                parent::handleError("MEMBER_ERROR", "This user is the owner of the group.");
+            } else {
+                Group::delete($postData['group_id']);
+                parent::handleError("MEMBER_ERROR", "This group was deleted");
+            }
         }
 
-        Member::delete($postData);
+        if (!Member::delete($postData['user_id'], $postData['group_id'])) {
+            return parent::handleError("MEMBER_ERROR", "An error occured, try again later.");
+        }
         
-
-        parent::handleError("MEMBER_ERROR", "Member left");
+        parent::handleError("MEMBER_ERROR", "Member left", Session::get('REFERER'));
         return true;
     }
 }

@@ -21,42 +21,40 @@
             </div>
             <div class="centerContent">
                 <li>
-                    <a href="/index.php?page=scores" class="Hover">Scores</a>
+                    <a href="/index.php?page=scores" class="Hover"><i class="fa-solid fa-star"></i> Scores</a>
                 </li>
                 <div class="line"></div>
                 <?php if (!empty($_SESSION['user'])): ?>
                 <li>
-                    <a href="/index.php?page=<?= ($_SESSION['user']['role'] == 'teacher') ? 'db_teacher' : 'db_student'; ?>" class="Hover">Dashboard</a>
-                </li>
-                <!-- TEMP -->
-                <div class="line"></div>
-                <li>
-                    <a href="/index.php?page=inbox" class="Hover">Inbox</a>
+                    <a href="/index.php?page=profile&id=<?= $_SESSION['user']['id'] ?>" class="Hover"><i class="fa-solid fa-user"></i> Profile</a>
                 </li>
                 <div class="line"></div>
                 <li>
-                    <a href="/index.php?page=settings" class="Hover">Settings</a>
+                    <a href="/index.php?page=chat" class="Hover"><i class="fa-solid fa-comment"></i> Chat</a>
                 </li>
-                <!-- TEMP -->
+                <div class="line"></div>
+                <!-- <li>
+                    <a href="/index.php?page=<?= ($_SESSION['user']['role'] == 'teacher') ? 'db_teacher' : 'db_student'; ?>" class="Hover"><i class="fa-solid fa-clipboard"></i> Dashboard</a>
+                </li>
+                <div class="line"></div> -->
+                <?php if (DataProcessor::registeredValue('group_member', ['user_id' => $_SESSION['user']['id']])): ?>
+                <li>
+                    <a href="/index.php?page=group&id=<?= Group::getUserGroup($_SESSION['user']['id'])['id'] ?>" class="Hover"><i class="fa-solid fa-users-between-lines"></i> Group</a>
+                </li>
                 <div class="line"></div>
                 <?php endif; ?>
                 <li>
-                    <a href="/index.php?page=groups" class="Hover">Groups</a>
+                    <a href="/index.php?page=groups" class="Hover"><i class="fa-solid fa-address-book"></i> Groups</a>
+                </li>
+                <div class="line"></div>
+                <?php endif; ?>
+                <li>
+                    <a href="/index.php?page=help" id="help" class="Hover"><i class="fa-solid fa-circle-question"></i> Help</a>
                 </li>
                 <div class="line"></div>
                 <li>
-                    <a href="/index.php?page=help" id="help" class="Hover">Help</a>
+                    <a href="/index.php?page=about" class="Hover"><i class="fa-solid fa-globe"></i> About</a>
                 </li>
-                <div class="line"></div>
-                <li>
-                    <a href="/index.php?page=about" class="Hover">About</a>
-                </li>
-                <!-- TEMP -->
-                <div class="line"></div>
-                <li>
-                    <a href="/index.php?page=users" class="Hover">Users</a>
-                </li>
-                <!-- TEMP -->
             </div>
             <?php if (empty($_SESSION['user'])): ?>
             <div class="user_opt">
@@ -69,6 +67,12 @@
             </div>
             <?php else: ?>
             <div class="user_opt">
+                <li>
+                    <a href="/index.php?page=inbox" id="inbox" class="Hover" style='margin-right: 10px;'><i class="fa-regular fa-bell"></i></a>
+                </li>
+                <li>
+                    <a href="/index.php?page=settings" id="settings" class="Hover" style='margin-right: 10px;'><i class="fas fa-cog"></i></a>
+                </li>
                 <li>
                     <a href="/index.php?page=logout" id="register">Logout</a>
                 </li>

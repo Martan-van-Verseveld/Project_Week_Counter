@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 switch ($_POST['action']) {
-    // Login/Register
+    // User
     case "register":
         $returned = RegistrationHandler::processForm($_POST);
         if (!$returned) {
@@ -23,6 +23,10 @@ switch ($_POST['action']) {
         if (!$returned) {
             Redirect::to('/index.php?page=home');
         }
+        break;
+
+    case "password-update":
+        UserHandler::updatePassword($_POST, $_SESSION);
         break;
 
     // Requests
@@ -68,9 +72,18 @@ switch ($_POST['action']) {
     case "group-create":
         GroupHandler::registerGroup($_POST, $_SESSION);
         break;
+        
+    case "group-edit":
+        GroupHandler::updateGroup($_POST, $_SESSION);
+        break;
 
     // Settings
     case "settings-update":
         SettingsHandler::updateSettings($_POST, $_SESSION);
+        break;
+
+    // Profile
+    case "profile-edit":
+        UserHandler::updateProfile($_POST, $_SESSION);
         break;
 }

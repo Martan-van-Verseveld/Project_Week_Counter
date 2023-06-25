@@ -21,6 +21,10 @@ body {
     font-weight: 600;
 }
 
+a {
+    color: #000;
+}
+
 /*
 div {
     width: 20vmax;
@@ -252,7 +256,7 @@ li:has(#register) {
     border-radius: 5px;
 }
 
-#login_form > input[type=submit], #reg_form > input[type=submit] {
+#login_form > input[type=submit], #reg_form > input[type=submit], .c_g-wrapper > form > input[type=submit], .settings_wrapper > form > input[type=submit] {
     padding: 1em 1.5em 1em 1.5em;
     background-color: #000;
     color: #fff;
@@ -263,7 +267,8 @@ li:has(#register) {
     transition: 0.25s ease-in-out;
 }
 
-#login_form > input[type=submit]:hover, #reg_form > input[type=submit]:hover {
+#login_form > input[type=submit]:hover, #reg_form > input[type=submit]:hover, .c_g-wrapper > form > input[type=submit]:hover, 
+.settings_wrapper > form > input[type=submit]:hover {
     outline: 1px solid #000;
     background-color: #fff;
     color: #000;
@@ -397,12 +402,201 @@ label:hover {
     right: 5em;
 }
 
+#groups {
+    width: 60vw;
+    padding: 1em;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.group {
+    outline: 1px solid #000;
+    color: #000;
+    padding: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.group p {
+    width: calc(100% / 5);
+    height: 100%;
+}
+
+footer  {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    bottom: 3em;
+}
+
+table {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-collapse: collapse;
+}
+
+td,
+th {
+    border: 1px solid white;
+    text-align: center;
+    padding: 1.2em 3em 1.2em 3em;
+    text-align: left;
+    outline: 1px solid #000;
+}
+
+th {
+    text-align: center;
+}
+
+.users_wrapper {
+    width: 60vw;
+    height: 50vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1em;
+}
+
+.user-card {
+    width: 100%;
+    height: 10vmin;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    align-items: center;
+}
+
+.centered {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    top: 6.5em;
+}
+
+#req {
+    background-color: transparent;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+#group-info {
+    display: flex;
+    gap: 3rem;
+}
+
+#group-container {
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.user_row {
+    display: flex;
+    gap: 1em;
+}
+
+.user_row > form > input[type=submit] {
+    background-color: transparent;
+    border: none;
+    font-size: 1.05rem;
+    font-weight: bold;
+}
+
+.user_row > form > input[type=submit]:hover {
+    font-size: 1.06rem;
+}
+
+#group-container > hr {
+    height: 5px;
+    background-color: black;
+    border: none;
+    outline: none;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.user_row > .line, #group-info > .line {
+    height: auto;
+}
+
+.c_g-wrapper {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #000;
+    border-radius: 20px;
+    padding: 3em 5em 3em 5em;
+}
+
+.c_g-wrapper > form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.c_g-wrapper > form > input[type=text], .c_g-wrapper > form > textarea {
+    padding: 1em;
+    outline: 1px solid #000;
+    border: none;
+}
+
+.settings_wrapper {
+    padding: 3em;
+    border: 2px solid #000;
+}
+
+.settings_wrapper > form {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.user {
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+}
+
+.user > hr {
+    height: 2px;
+    background-color: #000;
+    border: none;
+}
+
+.user > form > input[type=submit] {
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+    font-size: 1.05rem;
+    text-decoration: underline;
+}
+
 @media only screen and (min-width: 800px) {
     .form_wrapper:has(#reg_form), .form_wrapper {
         width: 55vmin;
     }
 
     .form_wrapper {
-        height: 50vmin;
+        height: 55vmin;
+    }
+
+    .users_wrapper {
+        width: auto;
+        height: auto;
+    }
+
+    .centered {
+        top: 3em;
     }
 }

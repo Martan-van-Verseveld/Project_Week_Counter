@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 21, 2023 at 05:55 PM
+-- Generation Time: Jun 25, 2023 at 02:26 PM
 -- Server version: 8.0.33-0ubuntu0.22.04.2
 -- PHP Version: 8.1.2-1ubuntu2.11
 
@@ -20,6 +20,28 @@ SET time_zone = "+00:00";
 --
 -- Database: `pw_counter`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chat`
+--
+
+CREATE TABLE `chat` (
+  `id` int NOT NULL,
+  `sender_id` int NOT NULL,
+  `recipient_id` int NOT NULL,
+  `body` varchar(255) NOT NULL,
+  `sent` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `viewed` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `chat`
+--
+
+INSERT INTO `chat` (`id`, `sender_id`, `recipient_id`, `body`, `sent`, `viewed`) VALUES
+(1, 2, 1, 'Hello Martan van Verseveld. \n\nThis is a teacher account!\n\n🙂👍', '2023-06-25 12:13:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -62,23 +84,7 @@ CREATE TABLE `group_info` (
 --
 
 INSERT INTO `group_info` (`id`, `name`, `description`) VALUES
-(1, 'Testing Group Great update', 'This group is made for testing purposes.'),
-(2, 'test group 2', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
-(3, 'Martan', 'Martan group :3'),
-(4, 'aaa', 'aaaaaaaa'),
-(5, 'Martanaaa', 'aaaaa'),
-(6, 'ddddd', 'ddddd'),
-(7, 'Test group', 'Tehee'),
-(8, '111 test', 'teeeest'),
-(9, '111 test', 'teeeest'),
-(10, '22222222', '222'),
-(11, '22222222', '222'),
-(12, 'aaaaaaaaaaaaaa', 'aa'),
-(13, 'aaaa', 'aaaaaaaaaaaa'),
-(14, 'aa tehee', 'aa'),
-(15, 'adddddddddd', 'aaaaaaaaaaaaaaaaaa'),
-(16, '222222222222222222222', '22222222'),
-(17, 'ddddddddddddddddddddd', 'dczxczxc');
+(2, 'Groep 2', 'Nog een test groep');
 
 -- --------------------------------------------------------
 
@@ -98,9 +104,7 @@ CREATE TABLE `group_member` (
 --
 
 INSERT INTO `group_member` (`id`, `user_id`, `group_id`, `role`) VALUES
-(30, 1, 2, 'owner'),
-(32, 4, 6, 'owner'),
-(43, 2, 17, 'owner');
+(3, 1, 2, 'owner');
 
 -- --------------------------------------------------------
 
@@ -113,15 +117,23 @@ CREATE TABLE `group_request` (
   `user_id` int NOT NULL,
   `group_id` int NOT NULL,
   `type` enum('request','invite') NOT NULL,
-  `status` enum('pending','invited') NOT NULL
+  `status` enum('pending','invited') NOT NULL,
+  `sent` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `group_request`
+-- Table structure for table `inbox`
 --
 
-INSERT INTO `group_request` (`id`, `user_id`, `group_id`, `type`, `status`) VALUES
-(76, 2, 1, 'request', 'pending');
+CREATE TABLE `inbox` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `body` blob NOT NULL,
+  `request_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -132,7 +144,7 @@ INSERT INTO `group_request` (`id`, `user_id`, `group_id`, `type`, `status`) VALU
 CREATE TABLE `score` (
   `id` int NOT NULL,
   `group_id` int NOT NULL,
-  `score` float NOT NULL
+  `score` float NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -140,8 +152,8 @@ CREATE TABLE `score` (
 --
 
 INSERT INTO `score` (`id`, `group_id`, `score`) VALUES
-(1, 2, 1337),
-(2, 1, 69420);
+(1, 1, 0),
+(2, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -153,18 +165,21 @@ CREATE TABLE `settings` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `notification` enum('all','none') NOT NULL DEFAULT 'all',
-  `invites` tinyint(1) NOT NULL DEFAULT '1',
-  `private` tinyint(1) NOT NULL DEFAULT '0'
+  `invite` tinyint(1) NOT NULL DEFAULT '1',
+  `private` tinyint(1) NOT NULL DEFAULT '0',
+  `email` tinyint(1) NOT NULL DEFAULT '1',
+  `lastname` tinyint(1) NOT NULL DEFAULT '1',
+  `chat` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`id`, `user_id`, `notification`, `invites`, `private`) VALUES
-(1, 5, 'all', 1, 0),
-(2, 6, 'all', 1, 0),
-(3, 2, 'all', 1, 0);
+INSERT INTO `settings` (`id`, `user_id`, `notification`, `invite`, `private`, `email`, `lastname`, `chat`) VALUES
+(1, 1, 'all', 1, 0, 1, 1, 1),
+(2, 2, 'all', 1, 0, 1, 1, 1),
+(3, 3, 'all', 1, 0, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -177,6 +192,7 @@ CREATE TABLE `user` (
   `email` varchar(32) NOT NULL,
   `firstname` varchar(8) NOT NULL,
   `lastname` varchar(24) NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT ' ',
   `password` varchar(128) NOT NULL,
   `class` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `role` enum('student','teacher','roleless') DEFAULT 'roleless'
@@ -186,17 +202,20 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `email`, `firstname`, `lastname`, `password`, `class`, `role`) VALUES
-(1, 'test@account.com', 'test', 'account', '$2y$10$o.J8VD2/Fvg2t7jt0vbmyOlURWIvGVXUg4K3Fjbiwvv189bAX5RKm', NULL, 'student'),
-(2, 'martan@vverseveld.nl', 'Martan', 'van Verseveld', '$2y$10$/4wclDOyk2849lrXYjEQN.4dKtgQnq8eFZx9j7zm59XeKrK7gBvhK', NULL, 'teacher'),
-(3, 'test2@account.com', 'test2', 'account', '$2y$10$J97ZI348VL35QIoRhrTB.uAu6AO2YkCmV02nZ22eKlyr0RcD5cJ9O', NULL, 'student'),
-(4, 'martan2@vverseveld.nl', 'Martan2', 'van Verseveld', '$2y$10$k8RDBjWWBL/8g27zTSVNWOhi6s2z9DLqRTSkCSCc2r6uMhfFNxBL6', NULL, 'teacher'),
-(5, 'admin@netfish.nl', 'lol', 'go to hell bitch', '$2y$10$AIKDafm07T28A1m.Ka2M6u.uXIBQsYqGRI9Ziez1cK0XRGZ4Vdpe2', NULL, 'student'),
-(6, 'teacher@mborijnland.nl', 'teacher', 'mborijnland', '$2y$10$F.XKIAPX7BLZ1Hn3NT1lAeL8/PEh9BPzUlXR1WG5fqjmsQeLri6Nm', NULL, 'teacher');
+INSERT INTO `user` (`id`, `email`, `firstname`, `lastname`, `description`, `password`, `class`, `role`) VALUES
+(1, 'martan@vverseveld.nl', 'Martan', 'van Verseveld', ' ', '$2y$10$OEt4b12T5zJthkINCzwdoebZWIJGAUCW06qbHV58fZiZKi/3QINGS', NULL, 'student'),
+(2, 'teacher@mborijnland.nl', 'teacher', 'mborijnland', 'This is a teacher account!', '$2y$10$6w69aSew5xBlzE7gDXRZTOWHB/dBobwa3obRTm3rM.mo5QYeUX1A6', NULL, 'teacher'),
+(3, 'test@account.com', 'test', 'account', ' ', '$2y$10$Io2sZryw7hRXaW1KhCky4urBfKVsJvRF/Oe735An9i.cCTPI0YbAO', NULL, 'student');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `chat`
+--
+ALTER TABLE `chat`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `class`
@@ -229,6 +248,12 @@ ALTER TABLE `group_request`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `inbox`
+--
+ALTER TABLE `inbox`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `score`
 --
 ALTER TABLE `score`
@@ -251,6 +276,12 @@ ALTER TABLE `user`
 --
 
 --
+-- AUTO_INCREMENT for table `chat`
+--
+ALTER TABLE `chat`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `class`
 --
 ALTER TABLE `class`
@@ -266,19 +297,25 @@ ALTER TABLE `class_member`
 -- AUTO_INCREMENT for table `group_info`
 --
 ALTER TABLE `group_info`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `group_member`
 --
 ALTER TABLE `group_member`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `group_request`
 --
 ALTER TABLE `group_request`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `inbox`
+--
+ALTER TABLE `inbox`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `score`
@@ -296,7 +333,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

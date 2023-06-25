@@ -34,6 +34,8 @@ class Group
         if ($insert <= 0) return false;
 
         $groupId = self::$pdo->lastInsertId();
+        Score::create($groupId);
+
         Member::create(([
             'user_id' => $data['user_id'],
             'group_id' => $groupId
@@ -45,6 +47,36 @@ class Group
         ]);
 
         return $lastId;        
+    }
+
+    public static function update($groupId, $data) 
+    {        
+        $groupId = DataProcessor::sanitizeData($groupId);
+        $data = DataProcessor::sanitizeData($data);
+
+        foreach ($data as $key => $value) {
+            // Prepare the SQL query
+            $query = "
+                UPDATE `group_info`
+                SET $key = :value
+                WHERE id = :group_id;
+            ";
+
+            try {
+                // Execute statement
+                $sto = self::$pdo->prepare($query);
+                $sto->execute([
+                    ':group_id' => $groupId,
+                    ':value' => $value
+                ]);
+            } catch (PDOException $e) {
+                Session::pdoDebug($e);
+            }
+        }
+
+        // Check insert success
+        $insert = $sto->rowCount();
+        return ($insert > 0);
     }
 
     public static function getGroups()
@@ -99,17 +131,22 @@ class Group
 
         // Prepare the SQL query
         $query = "
-            SELECT `group_info`.*
+            SELECT `group_info`.*, MAX(`group_member`.role) as 'member_role', COUNT(`group_member`.id) as 'member_count'
             FROM `group_member`
             INNER JOIN `group_info` ON `group_info`.id = `group_member`.group_id
-            WHERE `group_member`.user_id = :userId;
+            WHERE `group_member`.user_id = :userId
+            GROUP BY `group_info`.id;
         ";
 
-        // Execute statement
-        $sto = self::$pdo->prepare($query);
-        $sto->execute([
-            ':userId' => $userId
-        ]);
+        try {
+            // Execute statement
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':userId' => $userId
+            ]);
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
 
         $fetch = $sto->fetch(PDO::FETCH_ASSOC);
 
@@ -127,10 +164,14 @@ class Group
             WHERE `group_member`.group_id = :groupId;
         ";
 
-        $sto = self::$pdo->prepare($query);
-        $sto->execute([
-            ':groupId' => $groupId
-        ]);
+        try {
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':groupId' => $groupId
+            ]);
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
 
         $fetch = $sto->fetchAll(PDO::FETCH_ASSOC);
 
@@ -149,13 +190,17 @@ class Group
         $query = "
             SELECT *
             FROM `group_request`
-            WHERE group_id = :groupId;
+            WHERE group_id = :groupId AND type = 'request';
         ";
 
-        $sto = self::$pdo->prepare($query);
-        $sto->execute([
-            ':groupId' => $groupId
-        ]);
+        try {
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':groupId' => $groupId
+            ]);
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
 
         $fetch = $sto->fetchAll(PDO::FETCH_ASSOC);
 
@@ -179,26 +224,81 @@ class Group
         return $results;
     }
 
+    public static function getMemberCount($groupId)
+    {
+        $groupId = DataProcessor::sanitizeData($groupId);
+
+        $query = "
+            SELECT COUNT(id) as count
+            FROM `group_member`
+            WHERE group_id = :group_id;
+        ";
+
+        try {
+            // Execute statement
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':group_id' => $groupId
+            ]);
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
+
+        $fetch = $sto->fetch(PDO::FETCH_ASSOC)['count'];
+        return $fetch;
+    }
+
     public static function delete($groupId)
     {
         $groupId = DataProcessor::sanitizeData($groupId);
+        $members = self::getGroupMembers($groupId);
 
         // Prepare the SQL query
         $query = "
             DELETE FROM `group_info`
-            WHERE group_id = :group_id
+            WHERE id = :group_id
             LIMIT 1;
         ";
 
-        // Execute statement
-        $sto = self::$pdo->prepare($query);
-        $sto->execute([
-            ':group_id' => $groupId
-        ]);
+        try {
+            // Execute statement
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':group_id' => $groupId
+            ]);
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
+
+        foreach ($members as $member) {
+            Member::delete($member['id'], $groupId);
+        }
 
         // Check insert success
         $insert = $sto->rowCount();
         return ($insert > 0);
+    }
+
+    public static function isRegistered($groupName, $groupId) 
+    {
+        $groupName = DataProcessor::sanitizeData($groupName);
+        $groupId = DataProcessor::sanitizeData($groupId);
+
+        $query = "
+            SELECT * 
+            FROM `group_info`
+            WHERE name = :group_name AND NOT id = :group_id ;
+        ";
+
+        // Fetch the result
+        $sto = self::$pdo->prepare($query);
+        $sto->execute([
+            'group_name' => $groupName,
+            'group_id' => $groupId
+        ]);
+        
+        $results = $sto->rowCount();
+        return ($results > 0);
     }
 }
 
