@@ -33,7 +33,7 @@ class GroupHandler extends Handler
         $postData['user_id'] = $session['user']['id'];
         $created = Group::create($postData);
         if ($created > 0) {
-            parent::handleError("GROUP_ERROR", "Group was created", "/index.php?page=group_info&id=$created");
+            parent::handleError("GROUP_ERROR", "Group was created", "/index.php?page=group&id=$created");
             return true;
         }
 
