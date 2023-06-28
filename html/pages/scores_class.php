@@ -1,8 +1,9 @@
 <?php
 
+$classSelect = (isset($_GET['c'])) ? DataProcessor::sanitizeData($_GET['c']) : null;
 $orderType = (isset($_GET['o'])) ? DataProcessor::sanitizeData($_GET['o']) : null;
-$scores = Score::getScores($orderType);
-$groups = Group::getGroups();
+$scores = Score::getClassScores($orderType, $classSelect);
+$groups = Group::getClassGroups($classSelect);
 
 // print_p($scores);
 
@@ -26,9 +27,8 @@ if (!empty($_SESSION['user']) && DataProcessor::registeredValue('user', [
     ";
 }
 
-$userClass = (DataProcessor::registeredValue('class_member', ['user_id' => $_SESSION['user']['id']])) ? SchoolClass::getUserClass($_SESSION['user']['id'])['id'] : 1;
 echo "
-    <a href='/index.php?page=scores_class&c=$userClass&o=scoreDESC'>Class specific scores</a><br>
+    <a href='/index.php?page=scores&o=scoreDESC'>Normal group scores</a><br>
     <div class='score-add'>
         <select name='groups' id='order-selector'>
             <option value='scoreDESC' ". ($orderType == "scoreDESC" ? "selected" : "") .">score 9-0</option>
@@ -40,6 +40,18 @@ echo "
         </select>
         <input type='submit' value='Change layout' id='order-selector-submit'>
     </div>
+";
+
+$classes = SchoolClass::getClasses();
+echo "
+    <select name='classes' id='class-selector'>
+";
+foreach ($classes as $class) {
+    echo "<option value='{$class['id']}' ". ($orderType == $class['id'] ? "selected" : "") .">{$class['name']}</option>";
+}
+echo "
+    </select>
+    <input type='submit' value='Change class view' id='class-selector-submit'>
 ";
 
 foreach ($scores as $score) {
@@ -67,19 +79,20 @@ foreach ($scores as $score) {
 ?>
 
 <script>
+    c_submit = document.getElementById('class-selector-submit');
+    c_select = document.getElementById('class-selector');
+
     o_submit = document.getElementById('order-selector-submit');
     o_select = document.getElementById('order-selector');
     if (o_submit && o_select) o_submit.addEventListener('click', function(e) {
         event.preventDefault();
         console.log(o_select.value);
-        window.location.href = `/index.php?page=scores&o=${o_select.value}`;
+        window.location.href = `/index.php?page=scores_class&c=${c_select.value}&o=${o_select.value}`;
     });
-    
-    submit = document.getElementById('selector-submit');
-    select = document.getElementById('selector');
-    if (submit && select) submit.addEventListener('click', function(e) {
+
+    if (c_submit && c_select) c_submit.addEventListener('click', function(e) {
         event.preventDefault();
-        console.log(select.value);
-        window.location.href = `/index.php?page=score_edit&id=${select.value}`;
+        console.log(c_select.value);
+        window.location.href = `/index.php?page=scores_class&c=${c_select.value}&o=${o_select.value}`;
     });
 </script>

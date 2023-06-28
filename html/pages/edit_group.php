@@ -1,12 +1,13 @@
 <?php
 
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
 $groupId = DataProcessor::sanitizeData($_GET['id']);
 
 if (!DataProcessor::registeredValue('group_member', [
     'user_id' => $_SESSION['user']['id'],
     'group_id' => $groupId,
     'role' => 'owner'
-])) Redirect::to('/index.php');
+]) && $_SESSION['user']['role'] != 'teacher') Redirect::to('/index.php');
 
 
 $group = Group::getGroup($groupId);

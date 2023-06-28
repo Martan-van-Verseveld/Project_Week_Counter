@@ -10,13 +10,13 @@ class Inbox
         self::$pdo = Dbh::getConnection();
     }
 
-    public static function getInvites($userId)
+    public static function getInbox($userId) 
     {
         // Prepare the SQL query
         $query = "
-            SELECT *
-            FROM `group_request`
-            WHERE user_id = :user_id;
+            SELECT `inbox`.*
+            FROM `inbox`
+            WHERE `inbox`.user_id = :user_id;
         ";
 
         try {
@@ -25,7 +25,6 @@ class Inbox
             $sto->execute([
                 ':user_id' => $userId
             ]);
-            Session::pdoDebug("No errors.");
         } catch (PDOException $e) {
             Session::pdoDebug($e);
         }
@@ -34,39 +33,67 @@ class Inbox
         return $fetch;
     }
 
-    public static function getJoinRequests($userId)
+    public static function create($userId, $title, $body)
     {
         // Prepare the SQL query
         $query = "
-            SELECT `group_member`.*
-            FROM `group_member`
-            INNER JOIN `group_info` ON `group_info`.id = `group_member`.group_id
+            INSERT INTO `inbox` (user_id, title, body)
+            VALUES (:user_id, :title, :body);
         ";
 
-        try {
-            // Execute statement
-            $sto = self::$pdo->prepare($query);
-            $sto->execute();
-            Session::pdoDebug("No errors.");
-        } catch (PDOException $e) {
-            Session::pdoDebug($e);
-        }
+        // Execute statement
+        $sto = self::$pdo->prepare($query);
+        $sto->execute([
+            ':user_id' => $userId,
+            ':title' => $title,
+            ':body' => $body
+        ]);
 
-        $fetch = $sto->fetchAll(PDO::FETCH_ASSOC);
-        return $fetch;
+        // Check insert success
+        $insert = $sto->rowCount();
+        if ($insert <= 0) return false;
+
+        return self::$pdo->lastInsertId();
     }
 
-    public static function getInbox($userId)
+    public static function setBody($inboxId, $body)
     {
-        return [
-            'invites' => self::getInvites($userId),
-            // 'joins' => self::getJoinRequests($userId)
-        ];
+        // Prepare the SQL query
+        $query = "
+            UPDATE `inbox`
+            SET `inbox`.body = :body
+            WHERE `inbox`.id = :id;
+        ";
+
+        // Execute statement
+        $sto = self::$pdo->prepare($query);
+        $sto->execute([
+            ':id' => $inboxId,
+            ':body' => $body
+        ]);
+
+        // Check insert success
+        $insert = $sto->rowCount();
+        return ($insert > 0);
     }
 
-    public static function delete($userId, $requestId)
+    public static function delete($inboxId)
     {
+        // Prepare the SQL query
+        $query = "
+            DELETE FROM `inbox`
+            WHERE `inbox`.id = :id;
+        ";
 
+        // Execute statement
+        $sto = self::$pdo->prepare($query);
+        $sto->execute([
+            ':id' => $inboxId
+        ]);
+
+        // Check delete success
+        $delete = $sto->rowCount();
+        return ($delete > 0);
     }
 }
 

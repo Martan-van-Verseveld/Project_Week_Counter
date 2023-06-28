@@ -79,7 +79,7 @@ class User
     {
         // Prepare the SQL query
         $query = "
-            SELECT `user`.id, `user`.firstname, `user`.lastname, `user`.email, `user`.description, 
+            SELECT `user`.id, `user`.firstname, `user`.lastname, `user`.role, `user`.email, `user`.description, 
                 CONCAT(`user`.firstname, ' ', `user`.lastname) as 'name'
             FROM `user`;
         ";

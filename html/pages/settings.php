@@ -1,6 +1,6 @@
 <?php
 
-if (empty($_SESSION['user'])) Redirect::to("/index.php?page=home");
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
 
 $settings = Settings::getSettings($_SESSION['user']['id']);
 

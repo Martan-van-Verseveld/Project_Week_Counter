@@ -5,7 +5,7 @@
     <form action="/src/inc/formHandler.inc.php" method="POST" id="reg_form">
         <input type="hidden" name="action" value="register">
         <h2>Registreren</h2>
-        <span id="error"><?= (isset($_SESSION['ERROR']['REGISTER_ERROR'])) ? $_SESSION['ERROR']['REGISTER_ERROR'] : '' ?></span><br><br>
+        <span id="error"><?= (isset($_SESSION['ERROR']['REGISTER_ERROR'])) ? $_SESSION['ERROR']['REGISTER_ERROR'] : '' ?></span>
         <input type="email" name="email" placeholder="Email"/>
         <input required type="text" placeholder="firstname" name="firstname"/>
         <input required type="text" placeholder="lastname" name="lastname"/>

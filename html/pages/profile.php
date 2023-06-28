@@ -1,6 +1,8 @@
 <main>
 <?php
 
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
+
 $userId = $_GET['id'];
 if ($_SESSION['user']['id'] != $userId || !isset($_SESSION['user']) || !DataProcessor::registeredValue('user', [
     'id' => $_SESSION['user']['id'], 
@@ -16,8 +18,18 @@ $user = User::getUser($userId);
 $email = $user['settings']['email'] ? "{$user['email']}" : "";
 $name = $user['firstname'] . ($user['settings']['lastname'] ? " {$user['lastname']}" : "");
 
+if ($_SESSION['user']['role'] == 'teacher') {
+    echo "
+        <a href='/index.php?page=profile_edit&id=$userId'>Edit user profile</a>
+        <a href='/index.php?page=feedback_give&type=user&id=$userId'>Give feedback</a>    
+    ";
+}
+
 if ($_SESSION['user']['id'] == $userId) {
-    echo "<a href='/index.php?page=profile_edit&id=$userId'>Edit your profile</a>";
+    echo "
+        <a href='/index.php?page=profile_edit&id=$userId'>Edit your profile</a>
+        <a href='/index.php?page=feedback&type=user&id=$userId'>View feedback</a>    
+    ";
 }
 
 echo "

@@ -83,7 +83,13 @@ class Group
     {
         // Prepare the SQL query
         $query = "
-            SELECT `group_info`.*, COUNT(`group_member`.id) as member_count
+            SELECT `group_info`.*, COUNT(`group_member`.id) as member_count,
+                (
+                    SELECT `theme`.id 
+                    FROM `group_theme`
+                    LEFT JOIN `theme` ON `theme`.id = `group_theme`.theme_id
+                    WHERE `group_theme`.group_id = `group_info`.id
+                ) AS theme_id
             FROM `group_info`
             INNER JOIN `group_member` ON `group_member`.group_id = `group_info`.id
             GROUP BY `group_info`.id;
@@ -103,13 +109,50 @@ class Group
         return $results;
     }
 
+    public static function getClassGroups($classId)
+    {
+        // Prepare the SQL query
+        $query = "
+            SELECT `class_member`.*
+            FROM `class_member`
+            WHERE `class_member`.class_id = :class_id;
+        ";
+
+        try {
+            // Execute statement
+            $sto = self::$pdo->prepare($query);
+            $sto->execute([
+                ':class_id' => $classId
+            ]);
+        } catch (PDOException $e) {
+            Session::pdoDebug($e);
+        }
+
+        $fetch = $sto->fetchAll(PDO::FETCH_ASSOC);
+
+        $results = [];
+        foreach ($fetch as $user) {
+            $group = self::getUserGroup($user['id']);
+            // $results[$group['id']] = $group;
+            array_push($results, $group);
+        }
+
+        return $results;
+    }
+
     public static function getGroup($groupId)
     {
         $groupId = DataProcessor::sanitizeData($groupId);
 
         // Prepare the SQL query
         $query = "
-            SELECT *
+            SELECT *,
+                (
+                    SELECT `theme`.id 
+                    FROM `group_theme`
+                    LEFT JOIN `theme` ON `theme`.id = `group_theme`.theme_id
+                    WHERE `group_theme`.group_id = `group_info`.id
+                ) AS theme_id
             FROM `group_info`
             WHERE id = :groupId;
         ";
@@ -127,7 +170,7 @@ class Group
 
     public static function getUserGroup($userId)
     {
-        $groupId = DataProcessor::sanitizeData($userId);
+        $userId = DataProcessor::sanitizeData($userId);
 
         // Prepare the SQL query
         $query = "
@@ -269,6 +312,8 @@ class Group
         } catch (PDOException $e) {
             Session::pdoDebug($e);
         }
+
+        Theme::deleteGroup($groupId);
 
         foreach ($members as $member) {
             Member::delete($member['id'], $groupId);

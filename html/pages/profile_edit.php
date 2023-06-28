@@ -1,5 +1,7 @@
 <?php
 
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
+
 $userId = DataProcessor::sanitizeData($_GET['id']);
 if ($_SESSION['user']['id'] != $userId || !isset($_SESSION['user']) || !DataProcessor::registeredValue('user', [
     'id' => $_SESSION['user']['id']

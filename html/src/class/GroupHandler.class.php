@@ -50,7 +50,6 @@ class GroupHandler extends Handler
             !DataProcessor::validateFields($postData, ['name', 'group_id', 'description'])
             || !DataProcessor::validateFields($session['user'], ['id'])
             || !DataProcessor::validateType([$postData['name'] => FILTER_VALIDATE_REGEXP])
-            || !DataProcessor::validateType([$postData['description'] => FILTER_VALIDATE_REGEXP])
         ) {
             return parent::handleError("GROUP_UPDATE", "An error occured, try again later.");
         }
@@ -65,7 +64,8 @@ class GroupHandler extends Handler
             !DataProcessor::registeredValue('group_member', [
                 'user_id' => $session['user']['id'],
                 'role' => 'owner'
-            ])
+            ]) 
+            && $session['user']['role'] != 'teacher'
         ) {
             return parent::handleError("GROUP_UPDATE", "You are not authorized to edit this group.");
         }

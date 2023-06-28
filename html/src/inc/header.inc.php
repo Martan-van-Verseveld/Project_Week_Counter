@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="/libs/fontawesome/all.min.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/media/images/favicon.png">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/libs/bootstrap/bootstrap_icons.css">
-    <script src="https://kit.fontawesome.com/ffa3a463b6.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://kit.fontawesome.com/ffa3a463b6.js" crossorigin="anonymous"></script> -->
     <script type="text/javascript" src="/js/functions.js"></script>
     <script type="text/javascript" src="/js/welcomeMsg.js" defer></script>
     <title><?= ucfirst($_GET['page']) ?></title>
@@ -30,6 +31,10 @@
                 </li>
                 <div class="line"></div>
                 <li>
+                    <a href="/index.php?page=themes" class="Hover"><i class="fa-solid fa-file"></i> Themes</a>
+                </li>
+                <div class="line"></div>
+                <li>
                     <a href="/index.php?page=chat" class="Hover"><i class="fa-solid fa-comment"></i> Chat</a>
                 </li>
                 <div class="line"></div>
@@ -37,6 +42,18 @@
                     <a href="/index.php?page=<?= ($_SESSION['user']['role'] == 'teacher') ? 'db_teacher' : 'db_student'; ?>" class="Hover"><i class="fa-solid fa-clipboard"></i> Dashboard</a>
                 </li>
                 <div class="line"></div> -->
+                <?php if (DataProcessor::registeredValue('class_member', ['user_id' => $_SESSION['user']['id']])): ?>
+                <li>
+                    <a href="/index.php?page=class&id=<?= SchoolClass::getUserClass($_SESSION['user']['id'])['id'] ?>" class="Hover">Class</a>
+                </li>
+                <div class="line"></div>
+                <?php endif; ?>
+                <?php if ($_SESSION['user']['role'] == 'teacher'): ?>
+                <li>
+                    <a href="/index.php?page=classes" class="Hover">Classes</a>
+                </li>
+                <div class="line"></div>
+                <?php endif; ?>
                 <?php if (DataProcessor::registeredValue('group_member', ['user_id' => $_SESSION['user']['id']])): ?>
                 <li>
                     <a href="/index.php?page=group&id=<?= Group::getUserGroup($_SESSION['user']['id'])['id'] ?>" class="Hover"><i class="fa-solid fa-users-between-lines"></i> Group</a>

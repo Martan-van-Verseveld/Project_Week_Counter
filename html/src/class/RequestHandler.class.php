@@ -109,6 +109,28 @@ class RequestHandler extends Handler
             return parent::handleError("REQUEST_ERROR", "An error occured, try again later.");
         }
 
+        $group = Group::getGroup($postData['group_id']);
+        $inboxId = Inbox::create($postData['user_id'], "Group ivitation.", "");
+        Inbox::setBody($inboxId, "
+            <div class='invite-container'>
+                <p id='invite-group'>Group invite from: \"{$group['name']}\"</p>
+                <form method='POST' action='/src/inc/formHandler.inc.php'>
+                    <input type='hidden' name='action' value='invite-accept'>
+                    <input type='hidden' name='inbox_id' value='$inboxId'>
+                    <input type='hidden' value='{$postData['user_id']}' name='user_id'>
+                    <input type='hidden' value='{$postData['group_id']}' name='group_id'>
+                    <input type='submit' value='Accept'>
+                </form>
+                <form method='POST' action='/src/inc/formHandler.inc.php'>
+                    <input type='hidden' name='action' value='invite-decline'>
+                    <input type='hidden' name='inbox_id' value='$inboxId'>
+                    <input type='hidden' value='{$postData['user_id']}' name='user_id'>
+                    <input type='hidden' value='{$postData['group_id']}' name='group_id'>
+                    <input type='submit' value='Decline'>
+                </form>
+            </div>
+        ");
+        
         self::sendRequest($postData['group_id'], $postData['user_id'], 'invite');
 
         parent::handleError("REQUEST_ERROR", "Request sent");
@@ -129,6 +151,7 @@ class RequestHandler extends Handler
         }
 
         Request::acceptInvite($postData['user_id'], $postData['group_id']);
+        Inbox::delete($postData['inbox_id']);
 
         parent::handleError("REQUEST_ERROR", "Invite accepted");
         return true;
@@ -148,6 +171,7 @@ class RequestHandler extends Handler
         }
 
         Request::declineInvite($postData['user_id'], $postData['group_id']);
+        Inbox::delete($postData['inbox_id']);
 
         parent::handleError("REQUEST_ERROR", "Invite declined");
         return true;

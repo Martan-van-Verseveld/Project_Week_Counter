@@ -1,8 +1,6 @@
 <?php
 
-if (!isset($_SESSION['user'])) {
-    Redirect::to('/index.php?page=home');
-}
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
 
 $chats = Chat::getChats($_SESSION['user']['id']);
 $users = User::getUsers();

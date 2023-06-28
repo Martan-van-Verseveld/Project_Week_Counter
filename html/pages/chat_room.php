@@ -134,24 +134,25 @@
             return false;
         }
 
+        fetchData();
 
-        let fetchInterval;
+        // let fetchInterval;
 
-        function startFetchInterval() {
-            fetchData();
-            fetchInterval = setInterval(fetchData, 2500);
-        }
+        // function startFetchInterval() {
+        //     fetchData();
+        //     fetchInterval = setInterval(fetchData, 2500);
+        // }
 
-        function stopFetchInterval() {
-            clearInterval(fetchInterval);
-        }
+        // function stopFetchInterval() {
+        //     clearInterval(fetchInterval);
+        // }
 
-        window.addEventListener("focus", startFetchInterval);
-        window.addEventListener("blur", stopFetchInterval);
+        // window.addEventListener("focus", startFetchInterval);
+        // window.addEventListener("blur", stopFetchInterval);
 
-        if (document.visibilityState === 'visible') {
-            startFetchInterval();
-        }
+        // if (document.visibilityState === 'visible') {
+        //     startFetchInterval();
+        // }
     </script>
     <script>
         // Sending

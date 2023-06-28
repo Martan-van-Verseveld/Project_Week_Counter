@@ -2,11 +2,11 @@
 
 <div id="groups">
 <?php
-
-// if (!isset($_SESSION['user'])) die("Access denied!");
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
 
 
 $groups = Group::getGroups();
+print_p($groups);
 
 if (isset($_SESSION['user']) && !DataProcessor::registeredValue('group_member', [
     'user_id' => $_SESSION['user']['id']
@@ -18,16 +18,20 @@ if (isset($_SESSION['user']) && !DataProcessor::registeredValue('group_member', 
     ";
 }
 
+
 foreach ($groups as $group) {
+    $score = Score::getScore($group['id']);
+    
     echo "
         <div class='group'>
             <p id='group-name'><b>{$group['name']}</b></p>
             <p id='group-description'>{$group['description']}</p>
             <p id='group-member_count'>Members: {$group['member_count']}</p>
+            <p id='group-score'>Score: {$score['score']}</p>
     ";
 
     if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 'teacher') {
-        echo "<a href='/index.php?page=group_info&id={$group['id']}'>Go to this group</a>";
+        echo "<a href='/index.php?page=group&id={$group['id']}'>Go to this group</a>";
     } else if (isset($_SESSION['user']) && DataProcessor::registeredValue('group_member', [
         'user_id' => $_SESSION['user']['id'], 
         'group_id' => $group['id']

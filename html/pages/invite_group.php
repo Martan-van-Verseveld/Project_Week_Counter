@@ -1,5 +1,7 @@
 <?php
 
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
+
 if (!DataProcessor::registeredValue('group_member', [
     'user_id' => $_SESSION['user']['id'],
     'role' => 'owner'

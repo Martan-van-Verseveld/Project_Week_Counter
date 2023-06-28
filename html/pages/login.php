@@ -5,7 +5,7 @@
     <form action="/src/inc/formHandler.inc.php" method="POST" id="login_form">
         <input type="hidden" name="action" value="login">
         <h2>Account login</h2>
-        <span id="error"><?= (isset($_SESSION['ERROR']['LOGIN_ERROR'])) ? $_SESSION['ERROR']['LOGIN_ERROR'] : '' ?></span><br><br>
+        <span id="error"><?= (isset($_SESSION['ERROR']['LOGIN_ERROR'])) ? $_SESSION['ERROR']['LOGIN_ERROR'] : '' ?></span>
         <input type="email" name="email" placeholder="Email"/>
         <input type="password" name="password" placeholder="Password"/>
         <div class="opts">

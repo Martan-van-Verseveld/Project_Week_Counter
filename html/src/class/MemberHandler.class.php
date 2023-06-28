@@ -38,6 +38,7 @@ class MemberHandler extends Handler
 
         Member::delete($postData['user_id'], $postData['group_id']);
 
+        Inbox::create($postData['user_id'], "Group kick", "Sorry, you've been kicked from your group.");
         parent::handleError("MEMBER_ERROR", "Member removed!");
         return true;
     }
@@ -60,6 +61,7 @@ class MemberHandler extends Handler
                 'role' => "owner", 
                 'group_id' => $postData['group_id']
             ])
+            && $session['user']['role'] != 'teacher'
         ) {
             return parent::handleError("MEMBER_ERROR", "You do not have the authorization to transfer ownership to other users in this group.");
         }
@@ -75,6 +77,7 @@ class MemberHandler extends Handler
             parent::handleError("MEMBER_ERROR", "An error occured, try again later.");
         }
 
+        Inbox::create($postData['user_id'], "Group ownership update.", "You've became the new owner of your group!");
         parent::handleError("MEMBER_ERROR", "Member has became the new owner!");
         return true;
     }
