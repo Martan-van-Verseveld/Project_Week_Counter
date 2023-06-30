@@ -2,7 +2,7 @@
     if (!empty($_SESSION['user'])) Redirect::to("/index.php?page=home");
 ?>
 <main class="form_wrapper">
-    <form action="/src/inc/formHandler.inc.php" method="POST" id="reg_form">
+    <form action="src/inc/formHandler.inc.php" method="POST" id="reg_form">
         <input type="hidden" name="action" value="register">
         <h2>Registreren</h2>
         <span id="error"><?= (isset($_SESSION['ERROR']['REGISTER_ERROR'])) ? $_SESSION['ERROR']['REGISTER_ERROR'] : '' ?></span>
@@ -22,6 +22,6 @@
             </label>
         </div>
         <input type="submit" value="Registreren">
-        <a href="/index.php?page=login">Already have an account? Login here.</a>
+        <a href="index.php?page=login">Already have an account? Login here.</a>
     </form>
 </main>

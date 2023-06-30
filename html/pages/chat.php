@@ -46,7 +46,7 @@ foreach ($chats as $chat) {
 
     echo "
         <div class='chat-msg'>
-            <p class='chat-msg-item' id='recipient'><a href='/index.php?page=chat_room&s=$sender_id&r=$recipient_id'>$recipient</a></p>
+            <p class='chat-msg-item' id='recipient'><a href='index.php?page=chat_room&s=$sender_id&r=$recipient_id'>$recipient</a></p>
             <p class='chat-msg-item' id='name'>$sender sent:</p>
             <p class='chat-msg-item' id='body'>{$chat['body']}</p>
             <p class='chat-msg-item' id='sent'>{$chat['sent']}</p>
@@ -63,6 +63,6 @@ foreach ($chats as $chat) {
     submit.addEventListener('click', function(e) {
         event.preventDefault();
         console.log(select.value);
-        window.location.href = `/index.php?page=chat_room&s=<?= $_SESSION['user']['id'] ?>&r=${select.value}`;
+        window.location.href = `index.php?page=chat_room&s=<?= $_SESSION['user']['id'] ?>&r=${select.value}`;
     });
 </script>

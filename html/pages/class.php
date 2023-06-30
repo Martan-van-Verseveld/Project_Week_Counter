@@ -14,8 +14,8 @@ echo "
 ";
 if ($isAdmin) {
     echo "
-        <a href='/index.php?page=class_edit&id={$class['id']}'>Edit this class</a>
-        <a href='/index.php?page=class_add&id={$class['id']}'>Put students in class</a>
+        <a href='index.php?page=class_edit&id={$class['id']}'>Edit this class</a>
+        <a href='index.php?page=class_add&id={$class['id']}'>Put students in class</a>
     ";
 }
 echo "
@@ -28,7 +28,7 @@ echo "
 foreach ($members as $member) {
     if ($isAdmin && $member['role'] != 'teacher') {
         echo "
-            <form action='/src/inc/formHandler.inc.php' method='POST'>
+            <form action='src/inc/formHandler.inc.php' method='POST'>
                 <input type='hidden' name='action' value='class-remove'>
                 <input type='hidden' name='user_id' value='{$member['id']}'>
                 <input type='hidden' name='class_id' value='{$class['id']}'>

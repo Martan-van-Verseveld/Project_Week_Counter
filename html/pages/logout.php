@@ -2,6 +2,6 @@
 
     $_SESSION['user'] = [];
     $_SESSION['ERROR'] = [];
-    Redirect::to("/index.php?page=login");
+    Redirect::to("index.php?page=login");
 
 ?>  

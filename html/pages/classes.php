@@ -12,7 +12,7 @@ if (isset($_SESSION['user']) && !DataProcessor::registeredValue('class_member', 
 ]) && $_SESSION['user']['role'] == 'teacher') {
     echo "
         <div class='create-group'>
-            <a href='/index.php?page=create_class'>Create a class</a>
+            <a href='index.php?page=create_class'>Create a class</a>
         </div>
     ";
 }
@@ -26,12 +26,12 @@ foreach ($classes as $class) {
     ";
 
     if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 'teacher') {
-        echo "<a href='/index.php?page=class&id={$class['id']}'>Go to this class</a>";
+        echo "<a href='index.php?page=class&id={$class['id']}'>Go to this class</a>";
     } else if (isset($_SESSION['user']) && DataProcessor::registeredValue('class_member', [
         'user_id' => $_SESSION['user']['id'], 
         'class_id' => $class['id']
     ])) {
-        echo "<a href='/index.php?page=class&id={$class['id']}'>Go to your class</a>";
+        echo "<a href='index.php?page=class&id={$class['id']}'>Go to your class</a>";
     }
 
     echo "

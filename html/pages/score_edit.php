@@ -10,7 +10,7 @@ $score = Score::getScore($groupId);
 
 echo (isset($_SESSION['ERROR']['SCORE_EDIT_ERROR'])) ? $_SESSION['ERROR']['SCORE_EDIT_ERROR'] : '';
 echo "
-    <form action='/src/inc/formHandler.inc.php' method='POST'>
+    <form action='src/inc/formHandler.inc.php' method='POST'>
         <input type='hidden' name='action' value='score-edit'>
         <input type='hidden' name='score_id' value='{$score['id']}'>
         <input type='hidden' name='group_id' value='{$groupId}'>

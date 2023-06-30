@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 28, 2023 at 09:02 PM
+-- Generation Time: Jun 30, 2023 at 03:28 PM
 -- Server version: 8.0.33-0ubuntu0.22.04.2
 -- PHP Version: 8.1.2-1ubuntu2.11
 
@@ -34,7 +34,7 @@ CREATE TABLE `chat` (
   `body` varchar(255) NOT NULL,
   `sent` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `viewed` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `chat`
@@ -50,7 +50,9 @@ INSERT INTO `chat` (`id`, `sender_id`, `recipient_id`, `body`, `sent`, `viewed`)
 (7, 1, 4, 'ddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd\n\ndddddddd', '2023-06-27 22:58:46', NULL),
 (8, 1, 4, 'ddddddddddddddddd\n\nddddddddddddddddd\n\nddddddddddddddddd', '2023-06-27 22:59:02', NULL),
 (9, 1, 4, 'aaaa', '2023-06-27 23:00:03', NULL),
-(10, 1, 4, 'ddd', '2023-06-27 23:01:39', NULL);
+(10, 1, 4, 'ddd', '2023-06-27 23:01:39', NULL),
+(11, 2, 3, 'd', '2023-06-30 12:01:13', NULL),
+(12, 2, 3, 'ddd', '2023-06-30 12:01:22', NULL);
 
 -- --------------------------------------------------------
 
@@ -61,7 +63,7 @@ INSERT INTO `chat` (`id`, `sender_id`, `recipient_id`, `body`, `sent`, `viewed`)
 CREATE TABLE `class` (
   `id` int NOT NULL,
   `name` varchar(9) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `class`
@@ -82,7 +84,7 @@ CREATE TABLE `class_member` (
   `class_id` int NOT NULL,
   `user_id` int NOT NULL,
   `role` enum('student','teacher') NOT NULL DEFAULT 'student'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `class_member`
@@ -93,7 +95,8 @@ INSERT INTO `class_member` (`id`, `class_id`, `user_id`, `role`) VALUES
 (2, 1, 3, 'student'),
 (3, 1, 1, 'student'),
 (5, 2, 5, 'student'),
-(6, 2, 3, 'student');
+(6, 2, 3, 'student'),
+(7, 1, 4, 'student');
 
 -- --------------------------------------------------------
 
@@ -107,7 +110,7 @@ CREATE TABLE `group_feedback` (
   `teacher_id` int NOT NULL,
   `title` varchar(32) NOT NULL,
   `description` blob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `group_feedback`
@@ -126,7 +129,7 @@ CREATE TABLE `group_info` (
   `id` int NOT NULL,
   `name` varchar(32) NOT NULL,
   `description` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `group_info`
@@ -134,7 +137,7 @@ CREATE TABLE `group_info` (
 
 INSERT INTO `group_info` (`id`, `name`, `description`) VALUES
 (3, 'Privet', 'Privet moy pusiki :3\r\n\r\nThis was edited in by a teacher'),
-(5, 'Glowies', 'W****s \r\n\r\nEdit: Racism');
+(5, 'A', 'A');
 
 -- --------------------------------------------------------
 
@@ -146,8 +149,8 @@ CREATE TABLE `group_member` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `group_id` int NOT NULL,
-  `role` enum('member','owner') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'member'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `role` enum('member','owner') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'member'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `group_member`
@@ -171,7 +174,7 @@ CREATE TABLE `group_request` (
   `type` enum('request','invite') NOT NULL,
   `status` enum('pending','invited') NOT NULL,
   `sent` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -183,7 +186,7 @@ CREATE TABLE `group_theme` (
   `id` int NOT NULL,
   `group_id` int NOT NULL,
   `theme_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `group_theme`
@@ -202,16 +205,19 @@ INSERT INTO `group_theme` (`id`, `group_id`, `theme_id`) VALUES
 CREATE TABLE `inbox` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `body` blob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `inbox`
 --
 
 INSERT INTO `inbox` (`id`, `user_id`, `title`, `body`) VALUES
-(6, 3, 'Score update', 0x596f75722067726f757027732073636f726520776173207570646174656420746f2032);
+(6, 3, 'Score update', 0x596f75722067726f757027732073636f726520776173207570646174656420746f2032),
+(21, 1, 'Score update', 0x596f75722067726f757027732073636f726520776173207570646174656420746f20343231),
+(22, 4, 'Score update', 0x596f75722067726f757027732073636f726520776173207570646174656420746f20343231),
+(23, 3, 'Score update', 0x596f75722067726f757027732073636f726520776173207570646174656420746f20393939);
 
 -- --------------------------------------------------------
 
@@ -223,7 +229,7 @@ CREATE TABLE `score` (
   `id` int NOT NULL,
   `group_id` int NOT NULL,
   `score` float NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `score`
@@ -232,9 +238,9 @@ CREATE TABLE `score` (
 INSERT INTO `score` (`id`, `group_id`, `score`) VALUES
 (1, 1, 0),
 (2, 2, 0),
-(3, 3, 2),
+(3, 3, 999),
 (4, 4, 0),
-(5, 5, 420),
+(5, 5, 421),
 (6, 1, 0),
 (7, 2, 0);
 
@@ -253,14 +259,14 @@ CREATE TABLE `settings` (
   `email` tinyint(1) NOT NULL DEFAULT '1',
   `lastname` tinyint(1) NOT NULL DEFAULT '1',
   `chat` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `settings`
 --
 
 INSERT INTO `settings` (`id`, `user_id`, `notification`, `invite`, `private`, `email`, `lastname`, `chat`) VALUES
-(1, 1, 'all', 1, 0, 1, 1, 1),
+(1, 1, 'all', 1, 1, 1, 1, 1),
 (2, 2, 'all', 1, 0, 1, 1, 1),
 (3, 3, 'all', 1, 0, 1, 1, 1),
 (4, 4, 'all', 1, 0, 1, 1, 1),
@@ -279,7 +285,7 @@ CREATE TABLE `theme` (
   `active` tinyint(1) NOT NULL DEFAULT '0',
   `hidden` tinyint(1) NOT NULL DEFAULT '1',
   `max` tinyint NOT NULL DEFAULT '10'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `theme`
@@ -289,7 +295,8 @@ INSERT INTO `theme` (`id`, `title`, `description`, `active`, `hidden`, `max`) VA
 (1, 'First theme 2', 0x42727568, 1, 0, 1),
 (2, 'd', 0x6464646464, 0, 1, 10),
 (3, 'Please dontddddd', 0x536f20697420646f65736e277420776f726b210d0a0d0a546869732069732061207665727920676f6f64207468696e6720626563617573653a0d0a2d20492077616e74656420697420746f206e6f7420776f726b2e0d0a2d204f746865727769736520616c6f74206f66206572726f727320776f756c6420636f6d6520616c6f6e672e0d0a2d2057686963682069736e277420676f6f642e0d0a0d0a266c743b7363726970742667743b77696e646f772e616c657274282671756f743b5853532671756f743b29266c743b2f7363726970742667743b, 0, 0, 69),
-(4, 'New test lol', 0x4163746976653f204f722048696464656e2e2e2e, 0, 1, 10);
+(4, 'New test lol', 0x4163746976653f204f722048696464656e2e2e2e, 0, 1, 10),
+(5, 'Thema 1', 0x54657374, 0, 1, 10);
 
 -- --------------------------------------------------------
 
@@ -302,11 +309,11 @@ CREATE TABLE `user` (
   `email` varchar(32) NOT NULL,
   `firstname` varchar(8) NOT NULL,
   `lastname` varchar(24) NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT ' ',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT ' ',
   `password` varchar(128) NOT NULL,
-  `class` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `class` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `role` enum('student','teacher','roleless') DEFAULT 'roleless'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `user`
@@ -331,7 +338,7 @@ CREATE TABLE `user_feedback` (
   `teacher_id` int NOT NULL,
   `title` varchar(32) NOT NULL,
   `description` blob NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `user_feedback`
@@ -436,7 +443,7 @@ ALTER TABLE `user_feedback`
 -- AUTO_INCREMENT for table `chat`
 --
 ALTER TABLE `chat`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `class`
@@ -448,7 +455,7 @@ ALTER TABLE `class`
 -- AUTO_INCREMENT for table `class_member`
 --
 ALTER TABLE `class_member`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `group_feedback`
@@ -484,7 +491,7 @@ ALTER TABLE `group_theme`
 -- AUTO_INCREMENT for table `inbox`
 --
 ALTER TABLE `inbox`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `score`
@@ -502,7 +509,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `theme`
 --
 ALTER TABLE `theme`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `user`
@@ -520,3 +527,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

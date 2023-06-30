@@ -1,7 +1,7 @@
 <main>
 <?php
 
-if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.php?page=home');
+if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('index.php?page=home');
 
 $userId = $_GET['id'];
 if ($_SESSION['user']['id'] != $userId || !isset($_SESSION['user']) || !DataProcessor::registeredValue('user', [
@@ -20,15 +20,15 @@ $name = $user['firstname'] . ($user['settings']['lastname'] ? " {$user['lastname
 
 if ($_SESSION['user']['role'] == 'teacher') {
     echo "
-        <a href='/index.php?page=profile_edit&id=$userId'>Edit user profile</a>
-        <a href='/index.php?page=feedback_give&type=user&id=$userId'>Give feedback</a>    
+        <a href='index.php?page=profile_edit&id=$userId'>Edit user profile</a>
+        <a href='index.php?page=feedback_give&type=user&id=$userId'>Give feedback</a>    
     ";
 }
 
 if ($_SESSION['user']['id'] == $userId) {
     echo "
-        <a href='/index.php?page=profile_edit&id=$userId'>Edit your profile</a>
-        <a href='/index.php?page=feedback&type=user&id=$userId'>View feedback</a>    
+        <a href='index.php?page=profile_edit&id=$userId'>Edit your profile</a>
+        <a href='index.php?page=feedback&type=user&id=$userId'>View feedback</a>    
     ";
 }
 
@@ -44,7 +44,7 @@ if (!empty($user['group'])) {
     echo "
         <br><hr><br>
         <div class='group'>
-            <p class='group-item' id='name'><a href='/index.php?page=group&id={$user['group']['id']}'>{$user['group']['name']}</a></p>
+            <p class='group-item' id='name'><a href='index.php?page=group&id={$user['group']['id']}'>{$user['group']['name']}</a></p>
             <p class='group-item' id='role'>{$user['group']['member_role']}</p>
         </div>
     ";

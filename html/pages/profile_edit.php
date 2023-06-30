@@ -12,8 +12,8 @@ if ($_SESSION['user']['id'] != $userId || !isset($_SESSION['user']) || !DataProc
 $user = User::getUser($userId);
 
 echo "
-    <a href='/index.php?page=update_password&id=$userId'>Update your password</a>
-    <form action='/src/inc/formHandler.inc.php' method='POST'>
+    <a href='index.php?page=update_password&id=$userId'>Update your password</a>
+    <form id='edit_profile' action='src/inc/formHandler.inc.php' method='POST'>
         <input type='hidden' name='action' value='profile-edit'>
         <input type='hidden' name='user_id' value='{$user['id']}'>
         <input type='text' name='firstname' value='{$user['firstname']}'>
@@ -22,5 +22,5 @@ echo "
         <input type='text' name='email' value='{$user['email']}'>
         <input type='submit' value='Update profile'>
     </form>
-    <a href='/index.php?page=profile&id={$user['id']}'>Back</a>
+    <a href='index.php?page=profile&id={$user['id']}'>Back</a>
 ";

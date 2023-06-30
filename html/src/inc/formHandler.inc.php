@@ -1,5 +1,7 @@
 <?php
 
+
+
 require_once "{$_SERVER['DOCUMENT_ROOT']}/src/core/init.core.php";
 if (session_status() === PHP_SESSION_NONE) session_start();
 

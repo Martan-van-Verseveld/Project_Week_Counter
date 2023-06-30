@@ -16,7 +16,3 @@ if (!isset($_SESSION['REFERER'])) Session::put('REFERER', $_SERVER['REQUEST_URI'
 if (Session::get('REFERER') != $_SERVER['REQUEST_URI']) {
     Session::put('REFERER', $_SERVER['REQUEST_URI']);
 }
-
-// $_SESSION['ERROR'] = [];
-
-echo "<script>console.log(" . json_encode(json_encode($_SESSION, JSON_PRETTY_PRINT)) . ");</script>";

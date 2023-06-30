@@ -256,7 +256,7 @@ li:has(#register) {
     border-radius: 5px;
 }
 
-#login_form > input[type=submit], #reg_form > input[type=submit], .c_g-wrapper > form > input[type=submit], .settings_wrapper > form > input[type=submit] {
+input[type=submit], button {
     padding: 1em 1.5em 1em 1.5em;
     background-color: #000;
     color: #fff;
@@ -266,9 +266,7 @@ li:has(#register) {
     font-weight: 700;
     transition: 0.25s ease-in-out;
 }
-
-#login_form > input[type=submit]:hover, #reg_form > input[type=submit]:hover, .c_g-wrapper > form > input[type=submit]:hover, 
-.settings_wrapper > form > input[type=submit]:hover {
+input[type=submit]:hover, button:hover {
     outline: 1px solid #000;
     background-color: #fff;
     color: #000;
@@ -490,6 +488,7 @@ th {
 #group-info {
     display: flex;
     gap: 3rem;
+    margin: 1em 0 1em 0;
 }
 
 #group-container {
@@ -574,12 +573,191 @@ th {
     border: none;
 }
 
-.user > form > input[type=submit] {
-    background-color: transparent;
-    border: none;
-    font-weight: bold;
-    font-size: 1.05rem;
-    text-decoration: underline;
+.chat-msg {
+    width: 40vw;
+    height: auto;
+    padding: 1em;
+    border: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.chat-msg:not(.chat-msg ~ .chat-msg) {
+    margin-top: 2em;
+}
+
+div:has(#sendButton) {
+    width: 40vw;
+    height: auto;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1em;
+}
+
+div:has(#sendButton) > textarea {
+    width: 20vw;
+    height: 10vh;
+    padding: 1em;
+    outline: none;
+    border: 1px solid #000;
+}
+
+#sendButton {
+    border-radius: 0%;
+}
+
+#chat_selector_submit {
+    margin-left: 1em;
+    border-radius: 0%;
+}
+
+select {
+    padding: 1em;
+    outline: none;
+}
+
+input[type=number] {
+    padding: 1em;
+    margin: 1em 1em 1em 0;
+}
+
+#users-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#users-container hr {
+    margin: 1em 0 1em 0;
+}
+
+form:has(#name) {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1em;
+}
+
+form:has(#name) > input[type=text] {
+    padding: 1em;
+    outline: none;
+    border: 1px solid #000;
+}
+
+form:has(#name) > input[type=submit] {
+    border-radius: 0;
+}
+
+.theme {
+    width: 20vw;
+    padding: 1em;
+    border: 1px solid #000;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#create_form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#create_form > :not(input[type=submit]) {
+    padding: 1em;
+    outline: none;
+    border: 1px solid #000;
+    width: 20vw;
+}
+
+#create_form > textarea {
+    height: 10vh
+}
+
+#create_form > input[type=submit] {
+    border-radius: 0;
+}
+
+#edit_profile {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin: 1em 0 1em 0;
+}
+
+#edit_profile > input[type=submit] {
+    width: 10vw;
+    border-radius: 0;
+}
+
+#edit_profile > :not(input[type=submit]) {
+    padding: 1em;
+    width: 40vw;
+}
+
+#edit_profile > textarea {
+    height: 15vh;
+}
+
+#pass_update {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin: 1em 0 1em 0;
+}
+
+#pass_update > :not(input[type=submit], label) {
+    padding: 1em;
+    outline: none;
+    border: 1px solid;
+}
+
+#pass_update > input[type=submit] {
+    border-radius: 0;
+    width: 15vw;
+}
+
+#fb {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#fb > textarea {
+    width: 30vw;
+    height: 15vh;
+}
+
+#fb > :not(input[type=submit]) {
+    padding: 1em;
+}
+
+#fb > input[type=submit] {
+    border-radius: 0;
+    width: 15vw;
+}
+
+.class {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    border: 1px solid #000;
+    padding: 1em;
+}
+
+.score-add {
+    margin: 1em 0 1em 0;
+}
+
+#class-selector, #class-selector-submit {
+    margin: 1em 0 1em 0;
+    border-radius: 0;
+}
+
+.score-add > input[type=submit] {
+    border-radius: 0;
+    margin-left: 1em;
 }
 
 @media only screen and (min-width: 800px) {

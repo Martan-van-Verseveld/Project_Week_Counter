@@ -8,7 +8,7 @@ if (DataProcessor::registeredValue('group_member', [
 
 ?>
 
-<form action="/src/inc/formHandler.inc.php" method='POST'>
+<form action="src/inc/formHandler.inc.php" method='POST'>
     <input type="hidden" name='action' value='group-create'>
     <label for="name">Create your group!</label><br>
     <input type="text" name="name" id="name" placeholder="Group name here..."><br>

@@ -29,7 +29,7 @@ if (!empty($userGroup)
     && $theme['register_count'] < $theme['max']
 ) {
     echo "
-        <form action='/src/inc/formHandler.inc.php' method='POST'>
+        <form action='src/inc/formHandler.inc.php' method='POST'>
             <input type='hidden' name='action' value='theme-register'>
             <input type='hidden' name='group_id' value='{$userGroup['id']}'>
             <input type='hidden' name='theme_id' value='{$themeId}'>
@@ -45,7 +45,7 @@ if (!empty($userGroup)
     ]) 
 ) {
     echo "
-        <form action='/src/inc/formHandler.inc.php' method='POST'>
+        <form action='src/inc/formHandler.inc.php' method='POST'>
             <input type='hidden' name='action' value='theme-leave'>
             <input type='hidden' name='group_id' value='{$userGroup['id']}'>
             <input type='hidden' name='theme_id' value='{$themeId}'>

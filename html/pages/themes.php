@@ -17,7 +17,7 @@ foreach ($themes as $theme) {
     echo "
         <br>
         <div class='theme'>
-            <a href='/index.php?page=theme&id={$theme['id']}'>View this theme</a>
+            <a href='index.php?page=theme&id={$theme['id']}'>View this theme</a>
             <p class='theme-item' id='title'>{$theme['title']}</p>
             <p class='theme-item' id='registered'>{$theme['register_count']} / {$theme['max']}</p>
         </div>

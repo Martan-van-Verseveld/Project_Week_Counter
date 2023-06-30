@@ -28,23 +28,23 @@ $theme = (isset($group['theme_id'])) ? Theme::getTheme($group['theme_id']) : [];
 echo (isset($_SESSION['ERROR']['GROUP_ERROR'])) ? $_SESSION['ERROR']['GROUP_ERROR'] : '';
 echo "
     <div id='group-container'>
-        <a href='/index.php?page=feedback&type=group&id=$groupId'>View feedback</a>    
+        <a href='index.php?page=feedback&type=group&id=$groupId'>View feedback</a>    
 ";
 if ($isAdmin) {
     echo "
-        <a href='/index.php?page=edit_group&id={$group['id']}'>Edit your group</a>
-        <a href='/index.php?page=invite_group'>Invite people to group</a>
+        <a href='index.php?page=edit_group&id={$group['id']}'>Edit your group</a>
+        <a href='index.php?page=invite_group'>Invite people to group</a>
     ";
 }
 if ($_SESSION['user']['role'] == 'teacher') {
     echo "
-        <a href='/index.php?page=feedback_give&id={$_GET['id']}&type=group'>Give this group feedback</a>
+        <a href='index.php?page=feedback_give&id={$_GET['id']}&type=group'>Give this group feedback</a>
     ";
 }
 if (!empty($theme)) {
     echo "
         <div id='theme-info'>
-            <p id='theme-title'><a href='/index.php?page=theme&id={$theme['id']}'>Registered theme: {$theme['title']}</a></p>
+            <p id='theme-title'><a href='index.php?page=theme&id={$theme['id']}'>Registered theme: {$theme['title']}</a></p>
         </div>
     ";
 }
@@ -65,7 +65,7 @@ foreach ($groupInfo['Users'] as $info) {
     // print_p($info);
     if ($info['id'] === $_SESSION['user']['id']) {
         echo "
-            <form action='/src/inc/formHandler.inc.php' method='POST'>
+            <form action='src/inc/formHandler.inc.php' method='POST'>
                 <input type='hidden' name='action' value='member-leave'>
                 <input type='hidden' name='user_id' value='{$info['id']}'>
                 <input type='hidden' name='group_id' value='{$group['id']}'>
@@ -75,7 +75,7 @@ foreach ($groupInfo['Users'] as $info) {
     } else {
         if ($isAdmin) {
             echo "
-                <form action='/src/inc/formHandler.inc.php' method='POST'>
+                <form action='src/inc/formHandler.inc.php' method='POST'>
                     <input type='hidden' name='action' value='member-remove'>
                     <input type='hidden' name='user_id' value='{$info['id']}'>
                     <input type='hidden' name='group_id' value='{$group['id']}'>
@@ -107,13 +107,13 @@ foreach ($groupInfo['Users'] as $user) {
             echo "
                 <div class='request-container'>
                     <p id='request-user'><span id='user-group_role'>{$request['user_id']}</span></p>
-                    <form method='POST' action='/src/inc/formHandler.inc.php'>
+                    <form method='POST' action='src/inc/formHandler.inc.php'>
                         <input type='hidden' name='action' value='request-accept'>
                         <input type='hidden' value='{$request['user_id']}' name='user_id'>
                         <input type='hidden' value='{$group['id']}' name='group_id'>
                         <input type='submit' value='Accept'>
                     </form>
-                    <form method='POST' action='/src/inc/formHandler.inc.php'>
+                    <form method='POST' action='src/inc/formHandler.inc.php'>
                         <input type='hidden' name='action' value='request-decline'>
                         <input type='hidden' value='{$request['user_id']}' name='user_id'>
                         <input type='hidden' value='{$group['id']}' name='group_id'>

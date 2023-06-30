@@ -28,7 +28,7 @@ if (!empty($_SESSION['user']) && DataProcessor::registeredValue('user', [
 }
 
 echo "
-    <a href='/index.php?page=scores&o=scoreDESC'>Normal group scores</a><br>
+    <a href='index.php?page=scores&o=scoreDESC'>Normal group scores</a><br>
     <div class='score-add'>
         <select name='groups' id='order-selector'>
             <option value='scoreDESC' ". ($orderType == "scoreDESC" ? "selected" : "") .">score 9-0</option>
@@ -63,9 +63,9 @@ foreach ($scores as $score) {
         'user_id' => $_SESSION['user']['id'], 
         'group_id' => $score['group_id']
     ])) {
-        echo "<p id='group-name'><a href='/index.php?page=group&id={$score['group_id']}'>{$score['name']} [Your group]</a></p>";
+        echo "<p id='group-name'><a href='index.php?page=group&id={$score['group_id']}'>{$score['name']} [Your group]</a></p>";
     } else {
-        echo "<p id='group-name'><a href='/index.php?page=group&id={$score['group_id']}'>{$score['name']}</a></p>";
+        echo "<p id='group-name'><a href='index.php?page=group&id={$score['group_id']}'>{$score['name']}</a></p>";
     }
 
     echo "
@@ -87,12 +87,12 @@ foreach ($scores as $score) {
     if (o_submit && o_select) o_submit.addEventListener('click', function(e) {
         event.preventDefault();
         console.log(o_select.value);
-        window.location.href = `/index.php?page=scores_class&c=${c_select.value}&o=${o_select.value}`;
+        window.location.href = `index.php?page=scores_class&c=${c_select.value}&o=${o_select.value}`;
     });
 
     if (c_submit && c_select) c_submit.addEventListener('click', function(e) {
         event.preventDefault();
         console.log(c_select.value);
-        window.location.href = `/index.php?page=scores_class&c=${c_select.value}&o=${o_select.value}`;
+        window.location.href = `index.php?page=scores_class&c=${c_select.value}&o=${o_select.value}`;
     });
 </script>

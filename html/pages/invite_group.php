@@ -22,7 +22,7 @@ foreach ($users as $user) {
         echo "
             <div class='user'>
                 <p id='user-name'>{$user['name']}</p>
-                <form method='POST' action='/src/inc/formHandler.inc.php'>
+                <form method='POST' action='src/inc/formHandler.inc.php'>
                     <input type='hidden' name='action' value='invite-user'>
                     <input type='hidden' name='user_id' value='{$user['id']}'>
                     <input type='hidden' name='group_id' value='{$group['id']}'>

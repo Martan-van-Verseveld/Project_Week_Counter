@@ -15,7 +15,7 @@ if (empty($inbox)) {
 foreach ($inbox as $msg) {
     echo "
         <div class='inbox-msg' style='margin-bottom: 2rem;'>
-            <form action='/src/inc/formHandler.inc.php' method='POST'>
+            <form action='src/inc/formHandler.inc.php' method='POST'>
                 <input type='hidden' name='action' value='inbox-delete'>
                 <input type='hidden' name='inbox_id' value='{$msg['id']}'>
                 <input type='hidden' name='user_id' value='{$_SESSION['user']['id']}'>

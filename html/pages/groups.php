@@ -6,14 +6,13 @@ if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.
 
 
 $groups = Group::getGroups();
-print_p($groups);
 
 if (isset($_SESSION['user']) && !DataProcessor::registeredValue('group_member', [
     'user_id' => $_SESSION['user']['id']
 ])) {
     echo "
         <div class='create-group'>
-            <a href='/index.php?page=create_group'>Create a group</a>
+            <a href='index.php?page=create_group'>Create a group</a>
         </div>
     ";
 }
@@ -31,7 +30,7 @@ foreach ($groups as $group) {
     ";
 
     if (isset($_SESSION['user']) && $_SESSION['user']['role'] == 'teacher') {
-        echo "<a href='/index.php?page=group&id={$group['id']}'>Go to this group</a>";
+        echo "<a href='index.php?page=group&id={$group['id']}'>Go to this group</a>";
     } else if (isset($_SESSION['user']) && DataProcessor::registeredValue('group_member', [
         'user_id' => $_SESSION['user']['id'], 
         'group_id' => $group['id']
@@ -41,7 +40,7 @@ foreach ($groups as $group) {
 
     if (isset($_SESSION['user']) && !DataProcessor::registeredValue('group_member', ['user_id' => $_SESSION['user']['id']])) {
         echo "
-            <form method='POST' action='/src/inc/formHandler.inc.php' id='request'>
+            <form method='POST' action='src/inc/formHandler.inc.php' id='request'>
                 <input type='hidden' value='{$group['id']}' name='group_id'>
                 <input type='hidden' name='action' value='request'>
                 <input type='submit' value='Send join request'>

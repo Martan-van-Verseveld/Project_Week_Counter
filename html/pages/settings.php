@@ -5,7 +5,7 @@ if (empty($_SESSION['user']) || !isset($_SESSION['user'])) Redirect::to('/index.
 $settings = Settings::getSettings($_SESSION['user']['id']);
 
 echo "
-    <form action='/src/inc/formHandler.inc.php' method='POST'>
+    <form action='src/inc/formHandler.inc.php' method='POST'>
         <input type='hidden' name='action' value='settings-update'>
         <input type='hidden' name='user_id' value='{$_SESSION['user']['id']}'>
 

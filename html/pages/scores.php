@@ -28,7 +28,7 @@ if (!empty($_SESSION['user']) && DataProcessor::registeredValue('user', [
 
 $userClass = (DataProcessor::registeredValue('class_member', ['user_id' => $_SESSION['user']['id']])) ? SchoolClass::getUserClass($_SESSION['user']['id'])['id'] : 1;
 echo "
-    <a href='/index.php?page=scores_class&c=$userClass&o=scoreDESC'>Class specific scores</a><br>
+    <a href='index.php?page=scores_class&c=$userClass&o=scoreDESC'>Class specific scores</a><br>
     <div class='score-add'>
         <select name='groups' id='order-selector'>
             <option value='scoreDESC' ". ($orderType == "scoreDESC" ? "selected" : "") .">score 9-0</option>
@@ -51,9 +51,9 @@ foreach ($scores as $score) {
         'user_id' => $_SESSION['user']['id'], 
         'group_id' => $score['group_id']
     ])) {
-        echo "<p id='group-name'><a href='/index.php?page=group&id={$score['group_id']}'>{$score['name']} [Your group]</a></p>";
+        echo "<p id='group-name'><a href='index.php?page=group&id={$score['group_id']}'>{$score['name']} [Your group]</a></p>";
     } else {
-        echo "<p id='group-name'><a href='/index.php?page=group&id={$score['group_id']}'>{$score['name']}</a></p>";
+        echo "<p id='group-name'><a href='index.php?page=group&id={$score['group_id']}'>{$score['name']}</a></p>";
     }
 
     echo "
@@ -72,7 +72,7 @@ foreach ($scores as $score) {
     if (o_submit && o_select) o_submit.addEventListener('click', function(e) {
         event.preventDefault();
         console.log(o_select.value);
-        window.location.href = `/index.php?page=scores&o=${o_select.value}`;
+        window.location.href = `index.php?page=scores&o=${o_select.value}`;
     });
     
     submit = document.getElementById('selector-submit');
@@ -80,6 +80,6 @@ foreach ($scores as $score) {
     if (submit && select) submit.addEventListener('click', function(e) {
         event.preventDefault();
         console.log(select.value);
-        window.location.href = `/index.php?page=score_edit&id=${select.value}`;
+        window.location.href = `index.php?page=score_edit&id=${select.value}`;
     });
 </script>

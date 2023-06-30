@@ -8,7 +8,7 @@ $themeId = DataProcessor::sanitizeData($_GET['id']);
 $theme = Theme::getTheme($themeId);
 
 echo "
-    <form action='/src/inc/formHandler.inc.php' method='POST'>
+    <form action='src/inc/formHandler.inc.php' method='POST'>
         <input type='hidden' name='action' value='theme-edit'>
         <input type='hidden' name='theme_id' value='{$themeId}'>
 
